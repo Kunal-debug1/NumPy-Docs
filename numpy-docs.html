@@ -1,0 +1,1967 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NumPy Documentation — Complete Reference</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0c10;
+  --bg2: #0f1218;
+  --bg3: #161b24;
+  --bg4: #1e2533;
+  --border: #252d3d;
+  --border2: #2e3a50;
+  --text: #cdd5e0;
+  --text2: #8899b0;
+  --text3: #556070;
+  --accent: #4f9eff;
+  --accent2: #7bc4ff;
+  --green: #3ddc84;
+  --orange: #ffaa44;
+  --purple: #b57aff;
+  --red: #ff6b6b;
+  --yellow: #ffd166;
+  --sidebar-w: 280px;
+  --header-h: 60px;
+  --radius: 8px;
+  --code-bg: #0d1117;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 15px;
+  line-height: 1.7;
+  overflow-x: hidden;
+}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--bg2); }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+/* ── HEADER ── */
+header {
+  position: fixed; top: 0; left: 0; right: 0; height: var(--header-h);
+  background: rgba(10,12,16,0.92);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 24px;
+  z-index: 1000;
+}
+
+.logo {
+  display: flex; align-items: center; gap: 10px;
+  font-family: 'Syne', sans-serif; font-weight: 800; font-size: 20px;
+  color: #fff; letter-spacing: -0.5px; text-decoration: none;
+}
+.logo-badge {
+  background: linear-gradient(135deg, var(--accent), var(--purple));
+  color: #fff; font-size: 11px; font-weight: 700;
+  padding: 2px 8px; border-radius: 4px;
+  font-family: 'JetBrains Mono', monospace;
+  letter-spacing: 1px;
+}
+
+.header-right { display: flex; align-items: center; gap: 12px; }
+
+.version-badge {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px; color: var(--green);
+  background: rgba(61,220,132,0.08);
+  border: 1px solid rgba(61,220,132,0.2);
+  padding: 3px 10px; border-radius: 20px;
+}
+
+#search-input {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  padding: 7px 14px 7px 36px;
+  width: 220px;
+  outline: none;
+  transition: border-color .2s, width .3s;
+  position: relative;
+}
+#search-input:focus { border-color: var(--accent); width: 260px; }
+#search-input::placeholder { color: var(--text3); }
+
+.search-wrap { position: relative; }
+.search-icon {
+  position: absolute; left: 11px; top: 50%; transform: translateY(-50%);
+  color: var(--text3); font-size: 14px; pointer-events: none;
+}
+
+#menu-toggle {
+  display: none; background: none; border: none; cursor: pointer;
+  color: var(--text); font-size: 20px; padding: 4px;
+}
+
+/* ── LAYOUT ── */
+.layout { display: flex; padding-top: var(--header-h); min-height: 100vh; }
+
+/* ── SIDEBAR ── */
+aside {
+  width: var(--sidebar-w); min-width: var(--sidebar-w);
+  height: calc(100vh - var(--header-h));
+  position: sticky; top: var(--header-h);
+  overflow-y: auto;
+  background: var(--bg2);
+  border-right: 1px solid var(--border);
+  padding: 20px 0 40px;
+}
+
+.sidebar-section { margin-bottom: 6px; }
+
+.sidebar-cat {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 2px; text-transform: uppercase;
+  color: var(--text3);
+  padding: 10px 20px 6px;
+}
+
+.sidebar-link {
+  display: block;
+  padding: 7px 20px;
+  color: var(--text2);
+  font-size: 13.5px;
+  text-decoration: none;
+  cursor: pointer;
+  border-left: 2px solid transparent;
+  transition: all .15s;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.sidebar-link:hover { color: var(--text); background: rgba(79,158,255,0.06); }
+.sidebar-link.active {
+  color: var(--accent); border-left-color: var(--accent);
+  background: rgba(79,158,255,0.08);
+  font-weight: 500;
+}
+
+/* ── MAIN ── */
+main {
+  flex: 1; min-width: 0;
+  padding: 48px 56px;
+  max-width: 900px;
+}
+
+/* ── SECTIONS ── */
+.doc-section {
+  display: none; animation: fadeUp .3s ease;
+}
+.doc-section.active { display: block; }
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── TYPOGRAPHY ── */
+h1 {
+  font-family: 'Syne', sans-serif; font-weight: 800;
+  font-size: 36px; color: #fff;
+  letter-spacing: -1px; line-height: 1.15;
+  margin-bottom: 12px;
+}
+
+h2 {
+  font-family: 'Syne', sans-serif; font-weight: 700;
+  font-size: 22px; color: #fff;
+  letter-spacing: -0.3px;
+  margin: 40px 0 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+
+h3 {
+  font-family: 'Syne', sans-serif; font-weight: 600;
+  font-size: 17px; color: var(--accent2);
+  margin: 28px 0 10px;
+}
+
+p { margin-bottom: 14px; color: var(--text); line-height: 1.8; }
+
+.lead {
+  font-size: 17px; color: var(--text2);
+  line-height: 1.8; margin-bottom: 32px;
+}
+
+strong { color: #fff; font-weight: 500; }
+em { color: var(--orange); font-style: normal; }
+
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* ── SECTION HEADER ── */
+.section-header {
+  margin-bottom: 32px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--border);
+}
+
+.section-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; font-weight: 600;
+  letter-spacing: 2px; text-transform: uppercase;
+  color: var(--purple);
+  background: rgba(181,122,255,0.08);
+  border: 1px solid rgba(181,122,255,0.2);
+  padding: 3px 10px; border-radius: 20px;
+  display: inline-block; margin-bottom: 12px;
+}
+
+/* ── CODE ── */
+pre {
+  background: var(--code-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px 24px;
+  overflow-x: auto;
+  margin: 16px 0;
+  position: relative;
+}
+
+pre code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  line-height: 1.7;
+  color: #abb2bf;
+}
+
+code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  color: var(--accent2);
+  background: rgba(79,158,255,0.08);
+  padding: 1px 6px; border-radius: 4px;
+}
+
+pre code { background: none; padding: 0; color: #abb2bf; }
+
+/* syntax highlight */
+.kw  { color: #c678dd; }
+.fn  { color: #61afef; }
+.str { color: #98c379; }
+.num { color: #d19a66; }
+.cmt { color: #5c6370; font-style: italic; }
+.typ { color: #e5c07b; }
+.op  { color: #56b6c2; }
+.var { color: #abb2bf; }
+.attr{ color: #e06c75; }
+
+.copy-btn {
+  position: absolute; top: 10px; right: 10px;
+  background: var(--bg3); border: 1px solid var(--border);
+  color: var(--text3); font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; letter-spacing: 1px;
+  padding: 4px 10px; border-radius: 4px; cursor: pointer;
+  transition: all .2s;
+  text-transform: uppercase;
+}
+.copy-btn:hover { color: var(--accent); border-color: var(--accent); }
+.copy-btn.copied { color: var(--green); border-color: var(--green); }
+
+/* output block */
+.output {
+  background: rgba(61,220,132,0.04);
+  border: 1px solid rgba(61,220,132,0.15);
+  border-radius: var(--radius);
+  padding: 14px 20px;
+  margin-top: -8px;
+  margin-bottom: 16px;
+}
+.output-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; letter-spacing: 2px;
+  color: var(--green); text-transform: uppercase;
+  margin-bottom: 6px; font-weight: 600;
+}
+.output code {
+  background: none; padding: 0;
+  color: var(--green); font-size: 13px; display: block;
+  line-height: 1.6;
+}
+
+/* ── CARDS ── */
+.card-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 14px; margin: 24px 0;
+}
+
+.card {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px 20px;
+  transition: all .2s;
+  cursor: default;
+}
+.card:hover {
+  border-color: var(--border2);
+  background: var(--bg4);
+  transform: translateY(-1px);
+}
+.card-icon { font-size: 22px; margin-bottom: 8px; }
+.card-title { font-weight: 600; color: #fff; margin-bottom: 4px; font-size: 14px; }
+.card-desc { font-size: 12.5px; color: var(--text2); line-height: 1.5; }
+
+/* ── INFO BOXES ── */
+.note, .warn, .tip, .info {
+  border-radius: var(--radius);
+  padding: 14px 18px;
+  margin: 16px 0;
+  border-left: 3px solid;
+  display: flex; gap: 12px; align-items: flex-start;
+}
+.note  { background: rgba(79,158,255,0.06);  border-color: var(--accent);  }
+.warn  { background: rgba(255,170,68,0.06);  border-color: var(--orange);  }
+.tip   { background: rgba(61,220,132,0.06);  border-color: var(--green);   }
+.info  { background: rgba(181,122,255,0.06); border-color: var(--purple);  }
+.note-icon { font-size: 16px; margin-top: 1px; flex-shrink: 0; }
+.note p  { color: var(--accent2); margin: 0; font-size: 14px; }
+.warn p  { color: var(--orange);  margin: 0; font-size: 14px; }
+.tip p   { color: var(--green);   margin: 0; font-size: 14px; }
+.info p  { color: var(--purple);  margin: 0; font-size: 14px; }
+
+/* ── TABLE ── */
+.table-wrap { overflow-x: auto; margin: 16px 0; }
+table { width: 100%; border-collapse: collapse; }
+th {
+  text-align: left; padding: 10px 14px;
+  background: var(--bg3);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; letter-spacing: 1px; text-transform: uppercase;
+  color: var(--text2); border-bottom: 1px solid var(--border);
+}
+td {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+  font-size: 13.5px; color: var(--text);
+  vertical-align: top;
+}
+tr:hover td { background: rgba(255,255,255,0.02); }
+
+/* ── BADGES ── */
+.badge {
+  display: inline-block;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; font-weight: 600;
+  padding: 2px 8px; border-radius: 3px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+.badge-blue   { background: rgba(79,158,255,0.15);  color: var(--accent); }
+.badge-green  { background: rgba(61,220,132,0.15);  color: var(--green); }
+.badge-orange { background: rgba(255,170,68,0.15);  color: var(--orange); }
+.badge-purple { background: rgba(181,122,255,0.15); color: var(--purple); }
+
+/* ── HERO (homepage) ── */
+.hero {
+  display: flex; align-items: center; gap: 48px;
+  padding: 40px 0 48px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 48px;
+}
+.hero-text { flex: 1; }
+.hero h1 { font-size: 48px; margin-bottom: 16px; }
+.hero-accent { color: var(--accent); }
+.hero-sub { font-size: 18px; color: var(--text2); line-height: 1.7; margin-bottom: 28px; }
+.hero-btns { display: flex; gap: 12px; flex-wrap: wrap; }
+.btn {
+  padding: 10px 22px; border-radius: var(--radius);
+  font-size: 14px; font-weight: 500; cursor: pointer;
+  border: none; text-decoration: none;
+  transition: all .2s; display: inline-flex; align-items: center; gap: 6px;
+}
+.btn-primary { background: var(--accent); color: #fff; }
+.btn-primary:hover { background: var(--accent2); transform: translateY(-1px); }
+.btn-ghost {
+  background: transparent; color: var(--text);
+  border: 1px solid var(--border2);
+}
+.btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+.hero-visual {
+  flex-shrink: 0; width: 280px;
+  background: var(--code-bg);
+  border: 1px solid var(--border);
+  border-radius: 12px; padding: 20px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12.5px; line-height: 1.7;
+}
+.hero-visual .cmt { display: block; }
+
+/* ── TOPICS GRID (homepage) ── */
+.topics-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 12px; margin: 28px 0;
+}
+.topic-card {
+  background: var(--bg3); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 16px;
+  cursor: pointer; transition: all .2s;
+  text-decoration: none; display: block;
+}
+.topic-card:hover {
+  border-color: var(--accent); background: var(--bg4);
+  transform: translateY(-2px);
+}
+.topic-card-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; color: var(--text3); margin-bottom: 6px;
+}
+.topic-card-title { font-weight: 600; color: #fff; font-size: 13.5px; }
+.topic-card-cat { font-size: 11.5px; color: var(--text3); margin-top: 3px; }
+
+/* ── PROGRESS BAR ── */
+.progress-bar {
+  position: fixed; top: var(--header-h); left: 0; right: 0; height: 2px;
+  background: var(--border); z-index: 999;
+}
+.progress-fill {
+  height: 100%; width: 0;
+  background: linear-gradient(90deg, var(--accent), var(--purple));
+  transition: width .1s;
+}
+
+/* ── BREADCRUMB ── */
+.breadcrumb {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 12.5px; color: var(--text3);
+  margin-bottom: 24px; font-family: 'JetBrains Mono', monospace;
+}
+.breadcrumb span { color: var(--text3); }
+.breadcrumb a { color: var(--text2); cursor: pointer; }
+.breadcrumb a:hover { color: var(--accent); }
+
+/* ── PAGINATION ── */
+.pagination {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-top: 56px; padding-top: 24px;
+  border-top: 1px solid var(--border);
+  gap: 16px;
+}
+.page-btn {
+  display: flex; align-items: center; gap: 8px;
+  background: var(--bg3); border: 1px solid var(--border);
+  color: var(--text); padding: 10px 18px;
+  border-radius: var(--radius); cursor: pointer;
+  font-size: 13.5px; font-weight: 500;
+  transition: all .2s; flex: 1; text-decoration: none;
+}
+.page-btn:hover { border-color: var(--accent); color: var(--accent); }
+.page-btn.next { justify-content: flex-end; text-align: right; }
+.page-btn.prev { justify-content: flex-start; }
+.page-meta { font-size: 11px; color: var(--text3); }
+
+/* ── DEFINITION LIST ── */
+dl { margin: 16px 0; }
+dt {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px; color: var(--orange);
+  margin-top: 14px;
+}
+dd { margin: 4px 0 0 0; color: var(--text2); font-size: 14px; }
+
+/* ── RIGHT PANEL ── */
+.toc-sidebar {
+  width: 220px; flex-shrink: 0;
+  position: sticky; top: calc(var(--header-h) + 20px);
+  height: fit-content;
+  padding: 0 0 0 32px;
+  display: none;
+}
+@media (min-width: 1300px) { .toc-sidebar { display: block; } }
+
+.toc-title {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; letter-spacing: 2px;
+  text-transform: uppercase; color: var(--text3);
+  margin-bottom: 12px;
+}
+.toc-link {
+  display: block; font-size: 12.5px; color: var(--text3);
+  padding: 4px 0; text-decoration: none; border-left: 2px solid var(--border);
+  padding-left: 12px; transition: all .15s;
+}
+.toc-link:hover { color: var(--accent); border-left-color: var(--accent); }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 900px) {
+  main { padding: 32px 24px; }
+  .hero { flex-direction: column; }
+  .hero-visual { width: 100%; }
+  .topics-grid { grid-template-columns: repeat(2, 1fr); }
+  h1 { font-size: 30px; }
+}
+@media (max-width: 680px) {
+  aside { display: none; position: fixed; left: 0; top: var(--header-h); z-index: 900; width: 260px; display: none; }
+  aside.open { display: block; }
+  #menu-toggle { display: block; }
+  .topics-grid { grid-template-columns: 1fr 1fr; }
+  .card-grid { grid-template-columns: 1fr; }
+}
+
+/* ── OVERLAY ── */
+.overlay {
+  display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6);
+  z-index: 800;
+}
+.overlay.open { display: block; }
+</style>
+</head>
+<body>
+
+<div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
+
+<!-- HEADER -->
+<header>
+  <a class="logo" href="#" onclick="navigate('home')">
+    <span class="logo-badge">np</span>
+    NumPy Docs
+  </a>
+  <div class="header-right">
+    <span class="version-badge">v2.x</span>
+    <div class="search-wrap">
+      <span class="search-icon">⌕</span>
+      <input id="search-input" type="text" placeholder="Search docs..." oninput="searchDocs(this.value)">
+    </div>
+    <button id="menu-toggle" onclick="toggleSidebar()">☰</button>
+  </div>
+</header>
+
+<div class="overlay" id="overlay" onclick="closeSidebar()"></div>
+
+<div class="layout">
+<!-- SIDEBAR -->
+<aside id="sidebar">
+  <div class="sidebar-section">
+    <div class="sidebar-cat">Getting Started</div>
+    <a class="sidebar-link" onclick="navigate('home')">🏠 Home</a>
+    <a class="sidebar-link" onclick="navigate('intro')">Introduction</a>
+    <a class="sidebar-link" onclick="navigate('getting-started')">Getting Started</a>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-cat">Arrays</div>
+    <a class="sidebar-link" onclick="navigate('creating-arrays')">Creating Arrays</a>
+    <a class="sidebar-link" onclick="navigate('array-indexing')">Array Indexing</a>
+    <a class="sidebar-link" onclick="navigate('array-slicing')">Array Slicing</a>
+    <a class="sidebar-link" onclick="navigate('data-types')">Data Types</a>
+    <a class="sidebar-link" onclick="navigate('copy-vs-view')">Copy vs View</a>
+    <a class="sidebar-link" onclick="navigate('array-shape')">Array Shape</a>
+    <a class="sidebar-link" onclick="navigate('array-reshape')">Array Reshape</a>
+    <a class="sidebar-link" onclick="navigate('array-iterating')">Array Iterating</a>
+    <a class="sidebar-link" onclick="navigate('array-join')">Array Join</a>
+    <a class="sidebar-link" onclick="navigate('array-split')">Array Split</a>
+    <a class="sidebar-link" onclick="navigate('array-search')">Array Search</a>
+    <a class="sidebar-link" onclick="navigate('array-sort')">Array Sort</a>
+    <a class="sidebar-link" onclick="navigate('array-filter')">Array Filter</a>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-cat">Random Module</div>
+    <a class="sidebar-link" onclick="navigate('random-intro')">Random Intro</a>
+    <a class="sidebar-link" onclick="navigate('data-distribution')">Data Distribution</a>
+    <a class="sidebar-link" onclick="navigate('random-permutation')">Random Permutation</a>
+    <a class="sidebar-link" onclick="navigate('seaborn-module')">Seaborn Module</a>
+    <a class="sidebar-link" onclick="navigate('normal-dist')">Normal Distribution</a>
+    <a class="sidebar-link" onclick="navigate('binomial-dist')">Binomial Distribution</a>
+    <a class="sidebar-link" onclick="navigate('poisson-dist')">Poisson Distribution</a>
+    <a class="sidebar-link" onclick="navigate('uniform-dist')">Uniform Distribution</a>
+    <a class="sidebar-link" onclick="navigate('logistic-dist')">Logistic Distribution</a>
+    <a class="sidebar-link" onclick="navigate('multinomial-dist')">Multinomial Distribution</a>
+    <a class="sidebar-link" onclick="navigate('exponential-dist')">Exponential Distribution</a>
+    <a class="sidebar-link" onclick="navigate('chi-square-dist')">Chi Square Distribution</a>
+    <a class="sidebar-link" onclick="navigate('rayleigh-dist')">Rayleigh Distribution</a>
+    <a class="sidebar-link" onclick="navigate('pareto-dist')">Pareto Distribution</a>
+    <a class="sidebar-link" onclick="navigate('zipf-dist')">Zipf Distribution</a>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-cat">Universal Functions</div>
+    <a class="sidebar-link" onclick="navigate('ufunc-intro')">ufunc Introduction</a>
+    <a class="sidebar-link" onclick="navigate('ufunc-create')">Create Function</a>
+    <a class="sidebar-link" onclick="navigate('ufunc-arithmetic')">Simple Arithmetic</a>
+    <a class="sidebar-link" onclick="navigate('ufunc-rounding')">Rounding Decimals</a>
+    <a class="sidebar-link" onclick="navigate('ufunc-logs')">Logs</a>
+    <a class="sidebar-link" onclick="navigate('ufunc-summations')">Summations</a>
+    <a class="sidebar-link" onclick="navigate('ufunc-products')">Products</a>
+    <a class="sidebar-link" onclick="navigate('ufunc-differences')">Differences</a>
+    <a class="sidebar-link" onclick="navigate('ufunc-lcm')">Finding LCM</a>
+    <a class="sidebar-link" onclick="navigate('ufunc-gcd')">Finding GCD</a>
+    <a class="sidebar-link" onclick="navigate('ufunc-trig')">Trigonometric</a>
+    <a class="sidebar-link" onclick="navigate('ufunc-hyperbolic')">Hyperbolic</a>
+    <a class="sidebar-link" onclick="navigate('ufunc-set-ops')">Set Operations</a>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main id="main-content">
+
+<!-- ══════════ HOME ══════════ -->
+<section class="doc-section active" id="sec-home">
+  <div class="hero">
+    <div class="hero-text">
+      <div class="section-tag">Documentation</div>
+      <h1>NumPy <span class="hero-accent">Reference</span></h1>
+      <p class="hero-sub">Complete professional documentation for NumPy — the fundamental package for scientific computing in Python. Covering arrays, random, ufuncs and more.</p>
+      <div class="hero-btns">
+        <button class="btn btn-primary" onclick="navigate('intro')">→ Get Started</button>
+        <button class="btn btn-ghost" onclick="navigate('creating-arrays')">Creating Arrays</button>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <span class="kw">import</span> <span class="fn">numpy</span> <span class="kw">as</span> <span class="var">np</span><br><br>
+      <span class="cmt"># Create a 2D array</span>
+      <span class="var">arr</span> <span class="op">=</span> <span class="fn">np.array</span>([[<span class="num">1</span>,<span class="num">2</span>,<span class="num">3</span>],<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[<span class="num">4</span>,<span class="num">5</span>,<span class="num">6</span>]])<br><br>
+      <span class="cmt"># Shape &amp; operations</span>
+      <span class="fn">print</span>(<span class="var">arr</span>.<span class="attr">shape</span>)&nbsp;&nbsp;<span class="cmt"># (2,3)</span><br>
+      <span class="fn">print</span>(<span class="var">arr</span>.<span class="op">*</span><span class="num">2</span>)<br>
+      <span class="fn">print</span>(<span class="fn">np.mean</span>(<span class="var">arr</span>))<span class="cmt">&nbsp;# 3.5</span>
+    </div>
+  </div>
+
+  <h2>What is NumPy?</h2>
+  <p>NumPy (Numerical Python) is an open source Python library used throughout scientific computing and data analysis. It provides multidimensional array objects, routines for fast operations on arrays, mathematical and logical operations, shape manipulation, sorting, selecting, I/O, discrete Fourier transforms, basic linear algebra, basic statistical operations, random simulation, and much more.</p>
+
+  <div class="card-grid">
+    <div class="card"><div class="card-icon">⚡</div><div class="card-title">Fast Performance</div><div class="card-desc">Vectorized operations on C-level arrays, far faster than Python loops</div></div>
+    <div class="card"><div class="card-icon">🔢</div><div class="card-title">N-D Arrays</div><div class="card-desc">Flexible ndarray object for n-dimensional data with rich indexing</div></div>
+    <div class="card"><div class="card-icon">🎲</div><div class="card-title">Random Module</div><div class="card-desc">Full suite of probability distributions and random number generation</div></div>
+    <div class="card"><div class="card-icon">∫</div><div class="card-title">ufuncs</div><div class="card-desc">Universal functions operating element-wise on arrays with broadcasting</div></div>
+    <div class="card"><div class="card-icon">🔗</div><div class="card-title">Ecosystem</div><div class="card-desc">Foundation for Pandas, SciPy, Matplotlib, scikit-learn and more</div></div>
+    <div class="card"><div class="card-icon">📦</div><div class="card-title">Easy Install</div><div class="card-desc">pip install numpy — available on all major platforms</div></div>
+  </div>
+
+  <h2>All Topics</h2>
+  <div class="topics-grid" id="topics-grid">
+  </div>
+</section>
+
+<!-- ══════════ INTRO ══════════ -->
+<section class="doc-section" id="sec-intro">
+  <div class="breadcrumb"><a onclick="navigate('home')">Home</a><span>/</span>Introduction</div>
+  <div class="section-header">
+    <div class="section-tag">Getting Started</div>
+    <h1>NumPy Introduction</h1>
+    <p class="lead">NumPy is a Python library for working with arrays, and provides high-performance multidimensional array objects and tools for working with these arrays.</p>
+  </div>
+
+  <h2>What is NumPy?</h2>
+  <p>NumPy stands for <strong>Numerical Python</strong>. It is an open-source Python library that provides support for large, multi-dimensional arrays and matrices, along with a large collection of high-level mathematical functions to operate on these arrays.</p>
+
+  <div class="note"><span class="note-icon">ℹ</span><p>NumPy arrays are stored in <strong>contiguous blocks of memory</strong>, making operations much faster than Python lists which store pointers to objects scattered in memory.</p></div>
+
+  <h2>Why NumPy?</h2>
+  <p>In Python we have lists that serve the purpose of arrays, but they are slow to process. NumPy aims to provide an array object that is up to <strong>50x faster</strong> than traditional Python lists.</p>
+
+  <pre><button class="copy-btn" onclick="copyCode(this)">Copy</button><code><span class="cmt"># Python list vs NumPy — performance demo</span>
+<span class="kw">import</span> <span class="fn">numpy</span> <span class="kw">as</span> <span class="var">np</span>
+<span class="kw">import</span> <span class="var">time</span>
+
+<span class="var">py_list</span> <span class="op">=</span> <span class="fn">list</span>(<span class="fn">range</span>(<span class="num">1_000_000</span>))
+<span class="var">np_arr</span>  <span class="op">=</span> <span class="fn">np.arange</span>(<span class="num">1_000_000</span>)
+
+<span class="cmt"># Python list</span>
+<span class="var">t</span> <span class="op">=</span> <span class="var">time</span>.<span class="fn">time</span>()
+<span class="var">result</span> <span class="op">=</span> [<span class="var">x</span> <span class="op">**</span> <span class="num">2</span> <span class="kw">for</span> <span class="var">x</span> <span class="kw">in</span> <span class="var">py_list</span>]
+<span class="fn">print</span>(<span class="str">f"List: </span>{<span class="var">time</span>.<span class="fn">time</span>()<span class="op">-</span><span class="var">t</span>:<span class="num">.4f</span>}<span class="str">s"</span>)
+
+<span class="cmt"># NumPy</span>
+<span class="var">t</span> <span class="op">=</span> <span class="var">time</span>.<span class="fn">time</span>()
+<span class="var">result</span> <span class="op">=</span> <span class="var">np_arr</span> <span class="op">**</span> <span class="num">2</span>
+<span class="fn">print</span>(<span class="str">f"NumPy: </span>{<span class="var">time</span>.<span class="fn">time</span>()<span class="op">-</span><span class="var">t</span>:<span class="num">.4f</span>}<span class="str">s"</span>)</code></pre>
+  <div class="output"><div class="output-label">Output</div><code>List:  0.1823s<br>NumPy: 0.0041s</code></div>
+
+  <h2>NumPy in the Ecosystem</h2>
+  <p>NumPy is the backbone of the Python scientific computing stack:</p>
+  <div class="card-grid">
+    <div class="card"><div class="card-title">Pandas</div><div class="card-desc">DataFrames built on top of NumPy arrays</div></div>
+    <div class="card"><div class="card-title">SciPy</div><div class="card-desc">Scientific algorithms using NumPy arrays</div></div>
+    <div class="card"><div class="card-title">Matplotlib</div><div class="card-desc">Plots NumPy arrays as visualizations</div></div>
+    <div class="card"><div class="card-title">scikit-learn</div><div class="card-desc">Machine learning on NumPy data</div></div>
+  </div>
+
+  <div class="pagination">
+    <span></span>
+    <button class="page-btn next" onclick="navigate('getting-started')"><div><div class="page-meta">Next</div>Getting Started</div> →</button>
+  </div>
+</section>
+
+<!-- ══════════ GETTING STARTED ══════════ -->
+<section class="doc-section" id="sec-getting-started">
+  <div class="breadcrumb"><a onclick="navigate('home')">Home</a><span>/</span>Getting Started</div>
+  <div class="section-header">
+    <div class="section-tag">Installation</div>
+    <h1>Getting Started</h1>
+    <p class="lead">Install NumPy and write your first array in minutes.</p>
+  </div>
+
+  <h2>Installation</h2>
+  <p>If you already have Python and pip, NumPy installation is straightforward:</p>
+  <pre><button class="copy-btn" onclick="copyCode(this)">Copy</button><code><span class="cmt"># Using pip</span>
+pip install numpy
+
+<span class="cmt"># Using conda</span>
+conda install numpy
+
+<span class="cmt"># Verify installation</span>
+python -c "import numpy; print(numpy.__version__)"</code></pre>
+
+  <h2>Importing NumPy</h2>
+  <p>NumPy is typically imported using the alias <code>np</code> — this is a near-universal convention:</p>
+  <pre><button class="copy-btn" onclick="copyCode(this)">Copy</button><code><span class="kw">import</span> <span class="fn">numpy</span> <span class="kw">as</span> <span class="var">np</span>
+
+<span class="cmt"># Check version</span>
+<span class="fn">print</span>(<span class="var">np</span>.<span class="attr">__version__</span>)</code></pre>
+  <div class="output"><div class="output-label">Output</div><code>2.0.0</code></div>
+
+  <h2>Your First Array</h2>
+  <pre><button class="copy-btn" onclick="copyCode(this)">Copy</button><code><span class="kw">import</span> <span class="fn">numpy</span> <span class="kw">as</span> <span class="var">np</span>
+
+<span class="var">arr</span> <span class="op">=</span> <span class="fn">np.array</span>([<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>, <span class="num">4</span>, <span class="num">5</span>])
+
+<span class="fn">print</span>(<span class="var">arr</span>)          <span class="cmt"># [1 2 3 4 5]</span>
+<span class="fn">print</span>(<span class="fn">type</span>(<span class="var">arr</span>))   <span class="cmt"># &lt;class 'numpy.ndarray'&gt;</span></code></pre>
+
+  <div class="note"><span class="note-icon">ℹ</span><p>The array type returned is <strong>numpy.ndarray</strong> — short for N-Dimensional Array. It is the primary object used in NumPy.</p></div>
+
+  <div class="pagination">
+    <button class="page-btn prev" onclick="navigate('intro')">← <div><div class="page-meta">Previous</div>Introduction</div></button>
+    <button class="page-btn next" onclick="navigate('creating-arrays')"><div><div class="page-meta">Next</div>Creating Arrays</div> →</button>
+  </div>
+</section>
+
+<!-- ══════════ CREATING ARRAYS ══════════ -->
+<section class="doc-section" id="sec-creating-arrays">
+  <div class="breadcrumb"><a onclick="navigate('home')">Home</a><span>/</span>Creating Arrays</div>
+  <div class="section-header">
+    <div class="section-tag">Arrays</div>
+    <h1>Creating Arrays</h1>
+    <p class="lead">NumPy arrays can be created from Python lists, tuples, ranges, or special factory functions.</p>
+  </div>
+
+  <h2>np.array()</h2>
+  <p>Pass a list or tuple to <code>np.array()</code> to create an ndarray:</p>
+  <pre><button class="copy-btn" onclick="copyCode(this)">Copy</button><code><span class="kw">import</span> <span class="fn">numpy</span> <span class="kw">as</span> <span class="var">np</span>
+
+<span class="cmt"># 0-D (scalar)</span>
+<span class="var">a0</span> <span class="op">=</span> <span class="fn">np.array</span>(<span class="num">42</span>)
+
+<span class="cmt"># 1-D array</span>
+<span class="var">a1</span> <span class="op">=</span> <span class="fn">np.array</span>([<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>])
+
+<span class="cmt"># 2-D array</span>
+<span class="var">a2</span> <span class="op">=</span> <span class="fn">np.array</span>([[<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>], [<span class="num">4</span>, <span class="num">5</span>, <span class="num">6</span>]])
+
+<span class="cmt"># 3-D array</span>
+<span class="var">a3</span> <span class="op">=</span> <span class="fn">np.array</span>([[[<span class="num">1</span>,<span class="num">2</span>],[<span class="num">3</span>,<span class="num">4</span>]],[[<span class="num">5</span>,<span class="num">6</span>],[<span class="num">7</span>,<span class="num">8</span>]]])
+
+<span class="fn">print</span>(<span class="var">a0</span>.<span class="attr">ndim</span>, <span class="var">a1</span>.<span class="attr">ndim</span>, <span class="var">a2</span>.<span class="attr">ndim</span>, <span class="var">a3</span>.<span class="attr">ndim</span>)</code></pre>
+  <div class="output"><div class="output-label">Output</div><code>0 1 2 3</code></div>
+
+  <h2>Factory Functions</h2>
+  <div class="table-wrap"><table>
+    <tr><th>Function</th><th>Description</th><th>Example</th></tr>
+    <tr><td><code>np.zeros(shape)</code></td><td>Array filled with 0s</td><td><code>np.zeros((3,4))</code></td></tr>
+    <tr><td><code>np.ones(shape)</code></td><td>Array filled with 1s</td><td><code>np.ones((2,3))</code></td></tr>
+    <tr><td><code>np.full(shape, val)</code></td><td>Array filled with value</td><td><code>np.full((2,2), 7)</code></td></tr>
+    <tr><td><code>np.eye(n)</code></td><td>Identity matrix</td><td><code>np.eye(3)</code></td></tr>
+    <tr><td><code>np.arange(start, stop, step)</code></td><td>Evenly spaced values</td><td><code>np.arange(0, 10, 2)</code></td></tr>
+    <tr><td><code>np.linspace(start, stop, n)</code></td><td>n evenly-spaced points</td><td><code>np.linspace(0, 1, 5)</code></td></tr>
+    <tr><td><code>np.empty(shape)</code></td><td>Uninitialized array</td><td><code>np.empty((2,3))</code></td></tr>
+    <tr><td><code>np.random.rand(d0,d1)</code></td><td>Random [0,1) values</td><td><code>np.random.rand(3,3)</code></td></tr>
+  </table></div>
+
+  <pre><button class="copy-btn" onclick="copyCode(this)">Copy</button><code><span class="var">zeros</span>  <span class="op">=</span> <span class="fn">np.zeros</span>((<span class="num">2</span>,<span class="num">3</span>))
+<span class="var">ones</span>   <span class="op">=</span> <span class="fn">np.ones</span>((<span class="num">2</span>,<span class="num">3</span>))
+<span class="var">rng</span>    <span class="op">=</span> <span class="fn">np.arange</span>(<span class="num">0</span>, <span class="num">20</span>, <span class="num">5</span>)   <span class="cmt"># [0, 5, 10, 15]</span>
+<span class="var">lin</span>    <span class="op">=</span> <span class="fn">np.linspace</span>(<span class="num">0</span>, <span class="num">1</span>, <span class="num">5</span>) <span class="cmt"># [0.  0.25 0.5  0.75 1. ]</span>
+
+<span class="fn">print</span>(<span class="var">rng</span>)
+<span class="fn">print</span>(<span class="var">lin</span>)</code></pre>
+  <div class="output"><div class="output-label">Output</div><code>[ 0  5 10 15]<br>[0.   0.25 0.5  0.75 1.  ]</code></div>
+
+  <div class="pagination">
+    <button class="page-btn prev" onclick="navigate('getting-started')">← <div><div class="page-meta">Previous</div>Getting Started</div></button>
+    <button class="page-btn next" onclick="navigate('array-indexing')"><div><div class="page-meta">Next</div>Array Indexing</div> →</button>
+  </div>
+</section>
+
+<!-- ══════════ ARRAY INDEXING ══════════ -->
+<section class="doc-section" id="sec-array-indexing">
+  <div class="breadcrumb"><a onclick="navigate('home')">Home</a><span>/</span>Array Indexing</div>
+  <div class="section-header">
+    <div class="section-tag">Arrays</div>
+    <h1>Array Indexing</h1>
+    <p class="lead">Access array elements using integer indices, negative indices, and multi-dimensional coordinates.</p>
+  </div>
+
+  <h2>1-D Indexing</h2>
+  <pre><button class="copy-btn" onclick="copyCode(this)">Copy</button><code><span class="var">arr</span> <span class="op">=</span> <span class="fn">np.array</span>([<span class="num">10</span>, <span class="num">20</span>, <span class="num">30</span>, <span class="num">40</span>, <span class="num">50</span>])
+
+<span class="fn">print</span>(<span class="var">arr</span>[<span class="num">0</span>])   <span class="cmt"># 10  — first element</span>
+<span class="fn">print</span>(<span class="var">arr</span>[<span class="op">-</span><span class="num">1</span>])  <span class="cmt"># 50  — last element</span>
+<span class="fn">print</span>(<span class="var">arr</span>[<span class="num">2</span>])   <span class="cmt"># 30</span></code></pre>
+
+  <h2>2-D Indexing</h2>
+  <pre><button class="copy-btn" onclick="copyCode(this)">Copy</button><code><span class="var">arr</span> <span class="op">=</span> <span class="fn">np.array</span>([[<span class="num">1</span>,<span class="num">2</span>,<span class="num">3</span>],[<span class="num">4</span>,<span class="num">5</span>,<span class="num">6</span>]])
+
+<span class="fn">print</span>(<span class="var">arr</span>[<span class="num">0</span>, <span class="num">0</span>])  <span class="cmt"># 1  — row 0, col 0</span>
+<span class="fn">print</span>(<span class="var">arr</span>[<span class="num">1</span>, <span class="num">2</span>])  <span class="cmt"># 6  — row 1, col 2</span>
+<span class="fn">print</span>(<span class="var">arr</span>[<span class="op">-</span><span class="num">1</span>, <span class="op">-</span><span class="num">1</span>]) <span class="cmt"># 6  — last row, last col</span></code></pre>
+
+  <h2>3-D Indexing</h2>
+  <pre><button class="copy-btn" onclick="copyCode(this)">Copy</button><code><span class="var">arr</span> <span class="op">=</span> <span class="fn">np.array</span>([[[<span class="num">1</span>,<span class="num">2</span>],[<span class="num">3</span>,<span class="num">4</span>]],[[<span class="num">5</span>,<span class="num">6</span>]],[<span class="num">7</span>,<span class="num">8</span>]]])
+<span class="fn">print</span>(<span class="var">arr</span>[<span class="num">0</span>, <span class="num">1</span>, <span class="num">1</span>])  <span class="cmt"># 4</span>
+<span class="fn">print</span>(<span class="var">arr</span>[<span class="num">1</span>, <span class="num">0</span>, <span class="num">0</span>])  <span class="cmt"># 5</span></code></pre>
+
+  <h2>Boolean Indexing</h2>
+  <pre><button class="copy-btn" onclick="copyCode(this)">Copy</button><code><span class="var">arr</span> <span class="op">=</span> <span class="fn">np.array</span>([<span class="num">1</span>,<span class="num">2</span>,<span class="num">3</span>,<span class="num">4</span>,<span class="num">5</span>,<span class="num">6</span>])
+<span class="var">mask</span> <span class="op">=</span> <span class="var">arr</span> <span class="op">></span> <span class="num">3</span>
+<span class="fn">print</span>(<span class="var">mask</span>)       <span class="cmt"># [False False False  True  True  True]</span>
+<span class="fn">print</span>(<span class="var">arr</span>[<span class="var">mask</span>])  <span class="cmt"># [4 5 6]</span>
+
+<span class="cmt"># Shorthand</span>
+<span class="fn">print</span>(<span class="var">arr</span>[<span class="var">arr</span> <span class="op">%</span> <span class="num">2</span> <span class="op">==</span> <span class="num">0</span>])  <span class="cmt"># [2 4 6]</span></code></pre>
+
+  <div class="pagination">
+    <button class="page-btn prev" onclick="navigate('creating-arrays')">← <div><div class="page-meta">Previous</div>Creating Arrays</div></button>
+    <button class="page-btn next" onclick="navigate('array-slicing')"><div><div class="page-meta">Next</div>Array Slicing</div> →</button>
+  </div>
+</section>
+
+<!-- ══════════ ARRAY SLICING ══════════ -->
+<section class="doc-section" id="sec-array-slicing">
+  <div class="breadcrumb"><a onclick="navigate('home')">Home</a><span>/</span>Array Slicing</div>
+  <div class="section-header">
+    <div class="section-tag">Arrays</div>
+    <h1>Array Slicing</h1>
+    <p class="lead">Extract subarrays using the <code>[start:stop:step]</code> notation across any number of dimensions.</p>
+  </div>
+
+  <h2>1-D Slicing</h2>
+  <pre><button class="copy-btn" onclick="copyCode(this)">Copy</button><code><span class="var">arr</span> <span class="op">=</span> <span class="fn">np.array</span>([<span class="num">10</span>, <span class="num">20</span>, <span class="num">30</span>, <span class="num">40</span>, <span class="num">50</span>, <span class="num">60</span>, <span class="num">70</span>])
+
+<span class="fn">print</span>(<span class="var">arr</span>[<span class="num">1</span>:<span class="num">5</span>])    <span class="cmt"># [20 30 40 50]</span>
+<span class="fn">print</span>(<span class="var">arr</span>[:<span class="num">3</span>])     <span class="cmt"># [10 20 30]</span>
+<span class="fn">print</span>(<span class="var">arr</span>[<span class="num">4</span>:])     <span class="cmt"># [50 60 70]</span>
+<span class="fn">print</span>(<span class="var">arr</span>[<span class="op">::</span><span class="num">2</span>])    <span class="cmt"># [10 30 50 70] — every 2nd</span>
+<span class="fn">print</span>(<span class="var">arr</span>[::<span class="op">-</span><span class="num">1</span>])   <span class="cmt"># [70 60 50 40 30 20 10] — reversed</span></code></pre>
+
+  <h2>2-D Slicing</h2>
+  <pre><button class="copy-btn" onclick="copyCode(this)">Copy</button><code><span class="var">arr</span> <span class="op">=</span> <span class="fn">np.array</span>([[<span class="num">1</span>,<span class="num">2</span>,<span class="num">3</span>,<span class="num">4</span>,<span class="num">5</span>],
+               [<span class="num">6</span>,<span class="num">7</span>,<span class="num">8</span>,<span class="num">9</span>,<span class="num">10</span>]])
+
+<span class="fn">print</span>(<span class="var">arr</span>[<span class="num">1</span>, <span class="num">1</span>:<span class="num">4</span>])   <span class="cmt"># [7 8 9]</span>
+<span class="fn">print</span>(<span class="var">arr</span>[<span class="num">0</span>:<span class="num">2</span>, <span class="num">2</span>])   <span class="cmt"># [3 8] — col 2 of rows 0-1</span>
+<span class="fn">print</span>(<span class="var">arr</span>[:, <span class="num">1</span>:<span class="num">4</span>])   <span class="cmt"># all rows, cols 1-3</span></code></pre>
+  <div class="output"><div class="output-label">Output</div><code>[7 8 9]<br>[3 8]<br>[[2 3 4]<br> [7 8 9]]</code></div>
+
+  <div class="pagination">
+    <button class="page-btn prev" onclick="navigate('array-indexing')">← <div><div class="page-meta">Previous</div>Array Indexing</div></button>
+    <button class="page-btn next" onclick="navigate('data-types')"><div><div class="page-meta">Next</div>Data Types</div> →</button>
+  </div>
+</section>
+
+<!-- ══════════ DATA TYPES ══════════ -->
+<section class="doc-section" id="sec-data-types">
+  <div class="breadcrumb"><a onclick="navigate('home')">Home</a><span>/</span>Data Types</div>
+  <div class="section-header">
+    <div class="section-tag">Arrays</div>
+    <h1>Data Types</h1>
+    <p class="lead">NumPy supports more numeric data types than Python, enabling precise control over memory and computation.</p>
+  </div>
+
+  <h2>NumPy Data Types</h2>
+  <div class="table-wrap"><table>
+    <tr><th>Type</th><th>Code</th><th>Description</th></tr>
+    <tr><td><code>int8</code></td><td>i1</td><td>Signed 8-bit integer (-128 to 127)</td></tr>
+    <tr><td><code>int16</code></td><td>i2</td><td>Signed 16-bit integer</td></tr>
+    <tr><td><code>int32</code></td><td>i4</td><td>Signed 32-bit integer</td></tr>
+    <tr><td><code>int64</code></td><td>i8</td><td>Signed 64-bit integer (default int)</td></tr>
+    <tr><td><code>uint8</code></td><td>u1</td><td>Unsigned 8-bit integer (0 to 255)</td></tr>
+    <tr><td><code>float16</code></td><td>f2</td><td>Half precision float</td></tr>
+    <tr><td><code>float32</code></td><td>f4</td><td>Single precision float</td></tr>
+    <tr><td><code>float64</code></td><td>f8</td><td>Double precision float (default)</td></tr>
+    <tr><td><code>complex64</code></td><td>c8</td><td>Complex number (2×float32)</td></tr>
+    <tr><td><code>complex128</code></td><td>c16</td><td>Complex number (2×float64)</td></tr>
+    <tr><td><code>bool_</code></td><td>b1</td><td>Boolean (True/False)</td></tr>
+    <tr><td><code>str_</code></td><td>U</td><td>Unicode string</td></tr>
+  </table></div>
+
+  <h2>Checking and Setting dtype</h2>
+  <pre><button class="copy-btn" onclick="copyCode(this)">Copy</button><code><span class="var">arr</span> <span class="op">=</span> <span class="fn">np.array</span>([<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>])
+<span class="fn">print</span>(<span class="var">arr</span>.<span class="attr">dtype</span>)        <span class="cmt"># int64</span>
+
+<span class="var">arr_f</span> <span class="op">=</span> <span class="fn">np.array</span>([<span class="num">1.0</span>, <span class="num">2.5</span>, <span class="num">3.14</span>])
+<span class="fn">print</span>(<span class="var">arr_f</span>.<span class="attr">dtype</span>)      <span class="cmt"># float64</span>
+
+<span class="cmt"># Specify dtype at creation</span>
+<span class="var">arr_s</span> <span class="op">=</span> <span class="fn">np.array</span>([<span class="num">1</span>,<span class="num">2</span>,<span class="num">3</span>], <span class="attr">dtype</span><span class="op">=</span><span class="str">'float32'</span>)
+<span class="fn">print</span>(<span class="var">arr_s</span>.<span class="attr">dtype</span>)      <span class="cmt"># float32</span>
+
+<span class="cmt"># Convert / cast</span>
+<span class="var">arr_cast</span> <span class="op">=</span> <span class="var">arr_f</span>.<span class="fn">astype</span>(<span class="str">'int32'</span>)
+<span class="fn">print</span>(<span class="var">arr_cast</span>)           <span class="cmt"># [1 2 3]</span></code></pre>
+
+  <div class="pagination">
+    <button class="page-btn prev" onclick="navigate('array-slicing')">← <div><div class="page-meta">Previous</div>Array Slicing</div></button>
+    <button class="page-btn next" onclick="navigate('copy-vs-view')"><div><div class="page-meta">Next</div>Copy vs View</div> →</button>
+  </div>
+</section>
+
+<!-- ══════════ COPY VS VIEW ══════════ -->
+<section class="doc-section" id="sec-copy-vs-view">
+  <div class="breadcrumb"><a onclick="navigate('home')">Home</a><span>/</span>Copy vs View</div>
+  <div class="section-header">
+    <div class="section-tag">Arrays</div>
+    <h1>Copy vs View</h1>
+    <p class="lead">Understanding the difference between a copy and a view is essential to avoid bugs when modifying arrays.</p>
+  </div>
+
+  <h2>View — Shared Memory</h2>
+  <p>A view does <strong>not own the data</strong>. Changes to the view affect the original array.</p>
+  <pre><button class="copy-btn" onclick="copyCode(this)">Copy</button><code><span class="var">orig</span> <span class="op">=</span> <span class="fn">np.array</span>([<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>, <span class="num">4</span>, <span class="num">5</span>])
+<span class="var">view</span> <span class="op">=</span> <span class="var">orig</span>.<span class="fn">view</span>()
+
+<span class="var">view</span>[<span class="num">0</span>] <span class="op">=</span> <span class="num">99</span>
+<span class="fn">print</span>(<span class="var">orig</span>)  <span class="cmt"># [99  2  3  4  5]  ← original changed!</span>
+<span class="fn">print</span>(<span class="var">view</span>.<span class="attr">base</span> <span class="kw">is</span> <span class="var">orig</span>)  <span class="cmt"># True</span></code></pre>
+
+  <h2>Copy — Independent Data</h2>
+  <pre><button class="copy-btn" onclick="copyCode(this)">Copy</button><code><span class="var">orig</span> <span class="op">=</span> <span class="fn">np.array</span>([<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>, <span class="num">4</span>, <span class="num">5</span>])
+<span class="var">copy</span> <span class="op">=</span> <span class="var">orig</span>.<span class="fn">copy</span>()
+
+<span class="var">copy</span>[<span class="num">0</span>] <span class="op">=</span> <span class="num">99</span>
+<span class="fn">print</span>(<span class="var">orig</span>)  <span class="cmt"># [1 2 3 4 5]  ← original unchanged</span>
+<span class="fn">print</span>(<span class="var">copy</span>.<span class="attr">base</span> <span class="kw">is</span> <span class="kw">None</span>)  <span class="cmt"># True</span></code></pre>
+
+  <div class="warn"><span class="note-icon">⚠</span><p><strong>Slices return views</strong> — not copies. If you want to modify a slice without affecting the original, always call <code>.copy()</code> explicitly.</p></div>
+
+  <div class="pagination">
+    <button class="page-btn prev" onclick="navigate('data-types')">← <div><div class="page-meta">Previous</div>Data Types</div></button>
+    <button class="page-btn next" onclick="navigate('array-shape')"><div><div class="page-meta">Next</div>Array Shape</div> →</button>
+  </div>
+</section>
+
+<!-- ══════════ ARRAY SHAPE ══════════ -->
+<section class="doc-section" id="sec-array-shape">
+  <div class="breadcrumb"><a onclick="navigate('home')">Home</a><span>/</span>Array Shape</div>
+  <div class="section-header">
+    <div class="section-tag">Arrays</div>
+    <h1>Array Shape</h1>
+    <p class="lead">The shape of an array is a tuple describing the number of elements along each axis.</p>
+  </div>
+
+  <h2>The .shape Attribute</h2>
+  <pre><button class="copy-btn" onclick="copyCode(this)">Copy</button><code><span class="var">a1</span> <span class="op">=</span> <span class="fn">np.array</span>([<span class="num">1</span>,<span class="num">2</span>,<span class="num">3</span>,<span class="num">4</span>,<span class="num">5</span>])
+<span class="fn">print</span>(<span class="var">a1</span>.<span class="attr">shape</span>)   <span class="cmt"># (5,)</span>
+
+<span class="var">a2</span> <span class="op">=</span> <span class="fn">np.array</span>([[<span class="num">1</span>,<span class="num">2</span>,<span class="num">3</span>],[<span class="num">4</span>,<span class="num">5</span>,<span class="num">6</span>]])
+<span class="fn">print</span>(<span class="var">a2</span>.<span class="attr">shape</span>)   <span class="cmt"># (2, 3) — 2 rows, 3 cols</span>
+
+<span class="var">a3</span> <span class="op">=</span> <span class="fn">np.zeros</span>((<span class="num">2</span>,<span class="num">3</span>,<span class="num">4</span>))
+<span class="fn">print</span>(<span class="var">a3</span>.<span class="attr">shape</span>)   <span class="cmt"># (2, 3, 4)</span>
+<span class="fn">print</span>(<span class="var">a3</span>.<span class="attr">ndim</span>)    <span class="cmt"># 3</span>
+<span class="fn">print</span>(<span class="var">a3</span>.<span class="attr">size</span>)    <span class="cmt"># 24 (total elements)</span></code></pre>
+
+  <h2>ndim, size, itemsize</h2>
+  <div class="table-wrap"><table>
+    <tr><th>Attribute</th><th>Description</th></tr>
+    <tr><td><code>.ndim</code></td><td>Number of dimensions</td></tr>
+    <tr><td><code>.shape</code></td><td>Tuple of dimension sizes</td></tr>
+    <tr><td><code>.size</code></td><td>Total number of elements</td></tr>
+    <tr><td><code>.itemsize</code></td><td>Size in bytes of each element</td></tr>
+    <tr><td><code>.nbytes</code></td><td>Total bytes consumed</td></tr>
+    <tr><td><code>.dtype</code></td><td>Data type of elements</td></tr>
+  </table></div>
+
+  <div class="pagination">
+    <button class="page-btn prev" onclick="navigate('copy-vs-view')">← <div><div class="page-meta">Previous</div>Copy vs View</div></button>
+    <button class="page-btn next" onclick="navigate('array-reshape')"><div><div class="page-meta">Next</div>Array Reshape</div> →</button>
+  </div>
+</section>
+
+<!-- ══════════ ARRAY RESHAPE ══════════ -->
+<section class="doc-section" id="sec-array-reshape">
+  <div class="breadcrumb"><a onclick="navigate('home')">Home</a><span>/</span>Array Reshape</div>
+  <div class="section-header">
+    <div class="section-tag">Arrays</div>
+    <h1>Array Reshape</h1>
+    <p class="lead">Change the shape of an array without changing the data using <code>reshape()</code>, <code>flatten()</code>, and <code>ravel()</code>.</p>
+  </div>
+
+  <h2>reshape()</h2>
+  <pre><button class="copy-btn" onclick="copyCode(this)">Copy</button><code><span class="var">arr</span> <span class="op">=</span> <span class="fn">np.arange</span>(<span class="num">1</span>, <span class="num">13</span>)         <span class="cmt"># [1..12]</span>
+
+<span class="var">a23</span>  <span class="op">=</span> <span class="var">arr</span>.<span class="fn">reshape</span>(<span class="num">2</span>, <span class="num">6</span>)       <span class="cmt"># 2 rows, 6 cols</span>
+<span class="var">a234</span> <span class="op">=</span> <span class="var">arr</span>.<span class="fn">reshape</span>(<span class="num">2</span>, <span class="num">3</span>, <span class="num">2</span>)    <span class="cmt"># 3-D</span>
+<span class="var">auto</span> <span class="op">=</span> <span class="var">arr</span>.<span class="fn">reshape</span>(<span class="num">3</span>, <span class="op">-</span><span class="num">1</span>)       <span class="cmt"># -1 infers the missing dim</span>
+
+<span class="fn">print</span>(<span class="var">a23</span>)
+<span class="fn">print</span>(<span class="var">auto</span>.<span class="attr">shape</span>)   <span class="cmt"># (3, 4)</span></code></pre>
+
+  <h2>Flattening</h2>
+  <pre><button class="copy-btn" onclick="copyCode(this)">Copy</button><code><span class="var">arr</span> <span class="op">=</span> <span class="fn">np.array</span>([[<span class="num">1</span>,<span class="num">2</span>],[<span class="num">3</span>,<span class="num">4</span>],[<span class="num">5</span>,<span class="num">6</span>]])
+
+<span class="fn">print</span>(<span class="var">arr</span>.<span class="fn">flatten</span>())  <span class="cmt"># [1 2 3 4 5 6] — copy</span>
+<span class="fn">print</span>(<span class="var">arr</span>.<span class="fn">ravel</span>())    <span class="cmt"># [1 2 3 4 5 6] — view when possible</span></code></pre>
+
+  <div class="tip"><span class="note-icon">✓</span><p>Use <code>reshape(-1)</code> or <code>ravel()</code> for a view, and <code>flatten()</code> when you need an independent copy.</p></div>
+
+  <div class="pagination">
+    <button class="page-btn prev" onclick="navigate('array-shape')">← <div><div class="page-meta">Previous</div>Array Shape</div></button>
+    <button class="page-btn next" onclick="navigate('array-iterating')"><div><div class="page-meta">Next</div>Array Iterating</div> →</button>
+  </div>
+</section>
+
+<!-- ══════════ ARRAY ITERATING ══════════ -->
+<section class="doc-section" id="sec-array-iterating">
+  <div class="breadcrumb"><a onclick="navigate('home')">Home</a><span>/</span>Array Iterating</div>
+  <div class="section-header">
+    <div class="section-tag">Arrays</div>
+    <h1>Array Iterating</h1>
+    <p class="lead">Iterate over arrays using Python <code>for</code> loops or NumPy's <code>nditer</code> for advanced control.</p>
+  </div>
+
+  <h2>Basic Iteration</h2>
+  <pre><button class="copy-btn" onclick="copyCode(this)">Copy</button><code><span class="var">arr</span> <span class="op">=</span> <span class="fn">np.array</span>([[<span class="num">1</span>,<span class="num">2</span>,<span class="num">3</span>],[<span class="num">4</span>,<span class="num">5</span>,<span class="num">6</span>]])
+
+<span class="kw">for</span> <span class="var">row</span> <span class="kw">in</span> <span class="var">arr</span>:
+    <span class="fn">print</span>(<span class="var">row</span>)      <span class="cmt"># [1 2 3], then [4 5 6]</span>
+
+<span class="kw">for</span> <span class="var">val</span> <span class="kw">in</span> <span class="fn">np.nditer</span>(<span class="var">arr</span>):
+    <span class="fn">print</span>(<span class="var">val</span>, <span class="attr">end</span><span class="op">=</span><span class="str">' '</span>)  <span class="cmt"># 1 2 3 4 5 6</span></code></pre>
+
+  <h2>nditer with dtype</h2>
+  <pre><button class="copy-btn" onclick="copyCode(this)">Copy</button><code><span class="kw">for</span> <span class="var">x</span> <span class="kw">in</span> <span class="fn">np.nditer</span>(<span class="var">arr</span>, <span class="attr">flags</span><span class="op">=</span>[<span class="str">'buffered'</span>], <span class="attr">op_dtypes</span><span class="op">=</span>[<span class="str">'float'</span>]):
+    <span class="fn">print</span>(<span class="var">x</span>)   <span class="cmt"># prints as float64</span></code></pre>
+
+  <h2>ndenumerate</h2>
+  <pre><button class="copy-btn" onclick="copyCode(this)">Copy</button><code><span class="kw">for</span> <span class="var">idx</span>, <span class="var">val</span> <span class="kw">in</span> <span class="fn">np.ndenumerate</span>(<span class="var">arr</span>):
+    <span class="fn">print</span>(<span class="var">idx</span>, <span class="var">val</span>)
+<span class="cmt"># (0,0) 1  (0,1) 2  ...  (1,2) 6</span></code></pre>
+
+  <div class="pagination">
+    <button class="page-btn prev" onclick="navigate('array-reshape')">← <div><div class="page-meta">Previous</div>Array Reshape</div></button>
+    <button class="page-btn next" onclick="navigate('array-join')"><div><div class="page-meta">Next</div>Array Join</div> →</button>
+  </div>
+</section>
+
+<!-- ══════════ ARRAY JOIN ══════════ -->
+<section class="doc-section" id="sec-array-join">
+  <div class="breadcrumb"><a onclick="navigate('home')">Home</a><span>/</span>Array Join</div>
+  <div class="section-header">
+    <div class="section-tag">Arrays</div>
+    <h1>Array Join</h1>
+    <p class="lead">Combine multiple arrays using <code>concatenate</code>, <code>stack</code>, <code>hstack</code>, and <code>vstack</code>.</p>
+  </div>
+
+  <h2>concatenate()</h2>
+  <pre><button class="copy-btn" onclick="copyCode(this)">Copy</button><code><span class="var">a</span> <span class="op">=</span> <span class="fn">np.array</span>([<span class="num">1</span>,<span class="num">2</span>,<span class="num">3</span>])
+<span class="var">b</span> <span class="op">=</span> <span class="fn">np.array</span>([<span class="num">4</span>,<span class="num">5</span>,<span class="num">6</span>])
+
+<span class="fn">print</span>(<span class="fn">np.concatenate</span>((<span class="var">a</span>, <span class="var">b</span>)))           <span class="cmt"># [1 2 3 4 5 6]</span>
+
+<span class="var">x</span> <span class="op">=</span> <span class="fn">np.array</span>([[<span class="num">1</span>,<span class="num">2</span>],[<span class="num">3</span>,<span class="num">4</span>]])
+<span class="var">y</span> <span class="op">=</span> <span class="fn">np.array</span>([[<span class="num">5</span>,<span class="num">6</span>],[<span class="num">7</span>,<span class="num">8</span>]])
+<span class="fn">print</span>(<span class="fn">np.concatenate</span>((<span class="var">x</span>,<span class="var">y</span>), <span class="attr">axis</span><span class="op">=</span><span class="num">0</span>))   <span class="cmt"># row-wise</span>
+<span class="fn">print</span>(<span class="fn">np.concatenate</span>((<span class="var">x</span>,<span class="var">y</span>), <span class="attr">axis</span><span class="op">=</span><span class="num">1</span>))   <span class="cmt"># col-wise</span></code></pre>
+
+  <h2>stack, hstack, vstack, dstack</h2>
+  <pre><button class="copy-btn" onclick="copyCode(this)">Copy</button><code><span class="fn">print</span>(<span class="fn">np.stack</span>((<span class="var">a</span>,<span class="var">b</span>), <span class="attr">axis</span><span class="op">=</span><span class="num">0</span>))   <span class="cmt"># [[1 2 3],[4 5 6]]</span>
+<span class="fn">print</span>(<span class="fn">np.hstack</span>((<span class="var">a</span>,<span class="var">b</span>)))            <span class="cmt"># [1 2 3 4 5 6]</span>
+<span class="fn">print</span>(<span class="fn">np.vstack</span>((<span class="var">a</span>,<span class="var">b</span>)))            <span class="cmt"># [[1 2 3],[4 5 6]]</span>
+<span class="fn">print</span>(<span class="fn">np.dstack</span>((<span class="var">a</span>,<span class="var">b</span>)))            <span class="cmt"># depth-stacked</span></code></pre>
+
+  <div class="pagination">
+    <button class="page-btn prev" onclick="navigate('array-iterating')">← <div><div class="page-meta">Previous</div>Array Iterating</div></button>
+    <button class="page-btn next" onclick="navigate('array-split')"><div><div class="page-meta">Next</div>Array Split</div> →</button>
+  </div>
+</section>
+
+<!-- ══════════ ARRAY SPLIT ══════════ -->
+<section class="doc-section" id="sec-array-split">
+  <div class="breadcrumb"><a onclick="navigate('home')">Home</a><span>/</span>Array Split</div>
+  <div class="section-header">
+    <div class="section-tag">Arrays</div>
+    <h1>Array Split</h1>
+    <p class="lead">Split arrays into multiple sub-arrays using <code>array_split</code>, <code>hsplit</code>, and <code>vsplit</code>.</p>
+  </div>
+
+  <h2>array_split()</h2>
+  <pre><button class="copy-btn" onclick="copyCode(this)">Copy</button><code><span class="var">arr</span> <span class="op">=</span> <span class="fn">np.array</span>([<span class="num">1</span>,<span class="num">2</span>,<span class="num">3</span>,<span class="num">4</span>,<span class="num">5</span>,<span class="num">6</span>])
+
+<span class="var">parts</span> <span class="op">=</span> <span class="fn">np.array_split</span>(<span class="var">arr</span>, <span class="num">3</span>)   <span class="cmt"># 3 equal parts</span>
+<span class="fn">print</span>(<span class="var">parts</span>)
+<span class="cmt"># [array([1,2]), array([3,4]), array([5,6])]</span>
+
+<span class="cmt"># Uneven split — array_split handles it gracefully</span>
+<span class="var">parts4</span> <span class="op">=</span> <span class="fn">np.array_split</span>(<span class="var">arr</span>, <span class="num">4</span>)
+<span class="fn">print</span>(<span class="var">parts4</span>)
+<span class="cmt"># [array([1,2]), array([3,4]), array([5]), array([6])]</span></code></pre>
+
+  <h2>hsplit / vsplit / dsplit</h2>
+  <pre><button class="copy-btn" onclick="copyCode(this)">Copy</button><code><span class="var">arr2d</span> <span class="op">=</span> <span class="fn">np.array</span>([[<span class="num">1</span>,<span class="num">2</span>,<span class="num">3</span>,<span class="num">4</span>],[<span class="num">5</span>,<span class="num">6</span>,<span class="num">7</span>,<span class="num">8</span>]])
+
+<span class="var">h</span> <span class="op">=</span> <span class="fn">np.hsplit</span>(<span class="var">arr2d</span>, <span class="num">2</span>)   <span class="cmt"># split along columns</span>
+<span class="var">v</span> <span class="op">=</span> <span class="fn">np.vsplit</span>(<span class="var">arr2d</span>, <span class="num">2</span>)   <span class="cmt"># split along rows</span>
+<span class="fn">print</span>(<span class="var">h</span>[<span class="num">0</span>])  <span class="cmt"># [[1 2],[5 6]]</span></code></pre>
+
+  <div class="pagination">
+    <button class="page-btn prev" onclick="navigate('array-join')">← <div><div class="page-meta">Previous</div>Array Join</div></button>
+    <button class="page-btn next" onclick="navigate('array-search')"><div><div class="page-meta">Next</div>Array Search</div> →</button>
+  </div>
+</section>
+
+<!-- ══════════ ARRAY SEARCH ══════════ -->
+<section class="doc-section" id="sec-array-search">
+  <div class="breadcrumb"><a onclick="navigate('home')">Home</a><span>/</span>Array Search</div>
+  <div class="section-header">
+    <div class="section-tag">Arrays</div>
+    <h1>Array Search</h1>
+    <p class="lead">Find the indices of elements matching a condition using <code>np.where()</code>, <code>np.searchsorted()</code>, and related functions.</p>
+  </div>
+
+  <h2>np.where()</h2>
+  <pre><button class="copy-btn" onclick="copyCode(this)">Copy</button><code><span class="var">arr</span> <span class="op">=</span> <span class="fn">np.array</span>([<span class="num">1</span>,<span class="num">2</span>,<span class="num">3</span>,<span class="num">4</span>,<span class="num">5</span>,<span class="num">6</span>,<span class="num">7</span>,<span class="num">8</span>])
+
+<span class="var">idx</span> <span class="op">=</span> <span class="fn">np.where</span>(<span class="var">arr</span> <span class="op">==</span> <span class="num">4</span>)
+<span class="fn">print</span>(<span class="var">idx</span>)            <span class="cmt"># (array([3]),)</span>
+
+<span class="var">even</span> <span class="op">=</span> <span class="fn">np.where</span>(<span class="var">arr</span> <span class="op">%</span> <span class="num">2</span> <span class="op">==</span> <span class="num">0</span>)
+<span class="fn">print</span>(<span class="var">even</span>)           <span class="cmt"># (array([1,3,5,7]),)</span>
+
+<span class="cmt"># where as conditional expression</span>
+<span class="var">result</span> <span class="op">=</span> <span class="fn">np.where</span>(<span class="var">arr</span> <span class="op">></span> <span class="num">4</span>, <span class="str">"big"</span>, <span class="str">"small"</span>)
+<span class="fn">print</span>(<span class="var">result</span>)
+<span class="cmt"># ['small' 'small' 'small' 'small' 'big' 'big' 'big' 'big']</span></code></pre>
+
+  <h2>np.searchsorted()</h2>
+  <pre><button class="copy-btn" onclick="copyCode(this)">Copy</button><code><span class="var">arr</span> <span class="op">=</span> <span class="fn">np.array</span>([<span class="num">2</span>, <span class="num">4</span>, <span class="num">6</span>, <span class="num">8</span>, <span class="num">10</span>])
+
+<span class="fn">print</span>(<span class="fn">np.searchsorted</span>(<span class="var">arr</span>, <span class="num">7</span>))   <span class="cmt"># 3 — insert position</span>
+<span class="fn">print</span>(<span class="fn">np.searchsorted</span>(<span class="var">arr</span>, [<span class="num">3</span>,<span class="num">7</span>,<span class="num">9</span>]))<span class="cmt"># [1 3 4]</span></code></pre>
+
+  <div class="pagination">
+    <button class="page-btn prev" onclick="navigate('array-split')">← <div><div class="page-meta">Previous</div>Array Split</div></button>
+    <button class="page-btn next" onclick="navigate('array-sort')"><div><div class="page-meta">Next</div>Array Sort</div> →</button>
+  </div>
+</section>
+
+<!-- ══════════ ARRAY SORT ══════════ -->
+<section class="doc-section" id="sec-array-sort">
+  <div class="breadcrumb"><a onclick="navigate('home')">Home</a><span>/</span>Array Sort</div>
+  <div class="section-header">
+    <div class="section-tag">Arrays</div>
+    <h1>Array Sort</h1>
+    <p class="lead">Sort arrays with <code>np.sort()</code>, controlling axis and sort algorithm.</p>
+  </div>
+
+  <pre><button class="copy-btn" onclick="copyCode(this)">Copy</button><code><span class="var">arr</span> <span class="op">=</span> <span class="fn">np.array</span>([<span class="num">3</span>,<span class="num">1</span>,<span class="num">4</span>,<span class="num">1</span>,<span class="num">5</span>,<span class="num">9</span>,<span class="num">2</span>,<span class="num">6</span>])
+<span class="fn">print</span>(<span class="fn">np.sort</span>(<span class="var">arr</span>))         <span class="cmt"># [1 1 2 3 4 5 6 9]</span>
+
+<span class="cmt"># 2D — sort along axis</span>
+<span class="var">m</span> <span class="op">=</span> <span class="fn">np.array</span>([[<span class="num">3</span>,<span class="num">1</span>],[<span class="num">4</span>,<span class="num">2</span>]])
+<span class="fn">print</span>(<span class="fn">np.sort</span>(<span class="var">m</span>, <span class="attr">axis</span><span class="op">=</span><span class="num">0</span>))   <span class="cmt"># sort columns</span>
+<span class="fn">print</span>(<span class="fn">np.sort</span>(<span class="var">m</span>, <span class="attr">axis</span><span class="op">=</span><span class="num">1</span>))   <span class="cmt"># sort rows</span>
+
+<span class="cmt"># argsort — returns sorted indices</span>
+<span class="fn">print</span>(<span class="fn">np.argsort</span>(<span class="var">arr</span>))       <span class="cmt"># [1 3 6 0 2 4 7 5]</span>
+
+<span class="cmt"># Sort strings</span>
+<span class="var">s</span> <span class="op">=</span> <span class="fn">np.array</span>([<span class="str">'banana'</span>,<span class="str">'apple'</span>,<span class="str">'cherry'</span>])
+<span class="fn">print</span>(<span class="fn">np.sort</span>(<span class="var">s</span>))   <span class="cmt"># ['apple' 'banana' 'cherry']</span></code></pre>
+
+  <div class="pagination">
+    <button class="page-btn prev" onclick="navigate('array-search')">← <div><div class="page-meta">Previous</div>Array Search</div></button>
+    <button class="page-btn next" onclick="navigate('array-filter')"><div><div class="page-meta">Next</div>Array Filter</div> →</button>
+  </div>
+</section>
+
+<!-- ══════════ ARRAY FILTER ══════════ -->
+<section class="doc-section" id="sec-array-filter">
+  <div class="breadcrumb"><a onclick="navigate('home')">Home</a><span>/</span>Array Filter</div>
+  <div class="section-header">
+    <div class="section-tag">Arrays</div>
+    <h1>Array Filter</h1>
+    <p class="lead">Filter array elements using boolean arrays as masks.</p>
+  </div>
+
+  <pre><button class="copy-btn" onclick="copyCode(this)">Copy</button><code><span class="var">arr</span> <span class="op">=</span> <span class="fn">np.array</span>([<span class="num">41</span>, <span class="num">42</span>, <span class="num">43</span>, <span class="num">44</span>])
+
+<span class="cmt"># Manual boolean mask</span>
+<span class="var">mask</span> <span class="op">=</span> [<span class="kw">True</span>, <span class="kw">False</span>, <span class="kw">True</span>, <span class="kw">False</span>]
+<span class="fn">print</span>(<span class="var">arr</span>[<span class="var">mask</span>])   <span class="cmt"># [41 43]</span>
+
+<span class="cmt"># Dynamic mask from condition</span>
+<span class="var">evens</span> <span class="op">=</span> <span class="var">arr</span> <span class="op">%</span> <span class="num">2</span> <span class="op">==</span> <span class="num">0</span>
+<span class="fn">print</span>(<span class="var">arr</span>[<span class="var">evens</span>])  <span class="cmt"># [42 44]</span>
+
+<span class="cmt"># Compound conditions</span>
+<span class="var">arr2</span> <span class="op">=</span> <span class="fn">np.array</span>([<span class="num">10</span>,<span class="num">20</span>,<span class="num">30</span>,<span class="num">40</span>,<span class="num">50</span>])
+<span class="fn">print</span>(<span class="var">arr2</span>[(<span class="var">arr2</span> <span class="op">></span> <span class="num">15</span>) <span class="op">&amp;</span> (<span class="var">arr2</span> <span class="op">&lt;</span> <span class="num">45</span>)])  <span class="cmt"># [20 30 40]</span></code></pre>
+
+  <div class="pagination">
+    <button class="page-btn prev" onclick="navigate('array-sort')">← <div><div class="page-meta">Previous</div>Array Sort</div></button>
+    <button class="page-btn next" onclick="navigate('random-intro')"><div><div class="page-meta">Next</div>Random Module</div> →</button>
+  </div>
+</section>
+
+<!-- ══════════ RANDOM INTRO ══════════ -->
+<section class="doc-section" id="sec-random-intro">
+  <div class="breadcrumb"><a onclick="navigate('home')">Home</a><span>/</span>Random</div>
+  <div class="section-header">
+    <div class="section-tag">Random Module</div>
+    <h1>NumPy Random</h1>
+    <p class="lead">NumPy's <code>random</code> module provides functions for generating random numbers and sampling from probability distributions.</p>
+  </div>
+
+  <h2>Basic Random Functions</h2>
+  <pre><button class="copy-btn" onclick="copyCode(this)">Copy</button><code><span class="kw">from</span> <span class="var">numpy</span> <span class="kw">import</span> <span class="var">random</span>
+
+<span class="cmt"># Single random integer</span>
+<span class="fn">print</span>(<span class="var">random</span>.<span class="fn">randint</span>(<span class="num">100</span>))           <span class="cmt"># e.g., 47</span>
+
+<span class="cmt"># Random float [0, 1)</span>
+<span class="fn">print</span>(<span class="var">random</span>.<span class="fn">rand</span>())                  <span class="cmt"># e.g., 0.6394</span>
+
+<span class="cmt"># Random array</span>
+<span class="fn">print</span>(<span class="var">random</span>.<span class="fn">randint</span>(<span class="num">100</span>, <span class="attr">size</span><span class="op">=</span>(<span class="num">3</span>,<span class="num">4</span>)))<span class="cmt"># 3×4 random ints</span>
+
+<span class="cmt"># Random choice from array</span>
+<span class="var">arr</span> <span class="op">=</span> <span class="fn">np.array</span>([<span class="num">3</span>, <span class="num">5</span>, <span class="num">7</span>, <span class="num">9</span>])
+<span class="fn">print</span>(<span class="var">random</span>.<span class="fn">choice</span>(<span class="var">arr</span>))
+<span class="fn">print</span>(<span class="var">random</span>.<span class="fn">choice</span>(<span class="var">arr</span>, <span class="attr">size</span><span class="op">=</span>(<span class="num">2</span>,<span class="num">3</span>)))</code></pre>
+
+  <h2>Seeding for Reproducibility</h2>
+  <pre><button class="copy-btn" onclick="copyCode(this)">Copy</button><code><span class="var">random</span>.<span class="fn">seed</span>(<span class="num">42</span>)
+<span class="fn">print</span>(<span class="var">random</span>.<span class="fn">rand</span>(<span class="num">3</span>))   <span class="cmt"># always same output</span></code></pre>
+
+  <div class="pagination">
+    <button class="page-btn prev" onclick="navigate('array-filter')">← <div><div class="page-meta">Previous</div>Array Filter</div></button>
+    <button class="page-btn next" onclick="navigate('data-distribution')"><div><div class="page-meta">Next</div>Data Distribution</div> →</button>
+  </div>
+</section>
+
+<!-- ══════════ DATA DISTRIBUTION ══════════ -->
+<section class="doc-section" id="sec-data-distribution">
+  <div class="breadcrumb"><a onclick="navigate('home')">Home</a><span>/</span>Data Distribution</div>
+  <div class="section-header">
+    <div class="section-tag">Random Module</div>
+    <h1>Data Distribution</h1>
+    <p class="lead">A data distribution describes the probability of observing a value. NumPy can generate samples from many distributions.</p>
+  </div>
+
+  <h2>Checking a Distribution</h2>
+  <pre><button class="copy-btn" onclick="copyCode(this)">Copy</button><code><span class="kw">from</span> <span class="var">numpy</span> <span class="kw">import</span> <span class="var">random</span>
+
+<span class="cmt"># Generate 1000 random integers 0-99</span>
+<span class="var">x</span> <span class="op">=</span> <span class="var">random</span>.<span class="fn">choice</span>(<span class="fn">np.arange</span>(<span class="num">100</span>), <span class="attr">size</span><span class="op">=</span><span class="num">1000</span>)
+
+<span class="cmt"># Histogram check</span>
+<span class="kw">import</span> <span class="var">matplotlib</span>.<span class="var">pyplot</span> <span class="kw">as</span> <span class="var">plt</span>
+<span class="var">plt</span>.<span class="fn">hist</span>(<span class="var">x</span>, <span class="num">50</span>)
+<span class="var">plt</span>.<span class="fn">show</span>()  <span class="cmt"># shows near-uniform distribution</span></code></pre>
+
+  <div class="card-grid">
+    <div class="card"><div class="card-title">Uniform</div><div class="card-desc">All values equally likely between two bounds</div></div>
+    <div class="card"><div class="card-title">Normal</div><div class="card-desc">Bell curve — most values near the mean</div></div>
+    <div class="card"><div class="card-title">Binomial</div><div class="card-desc">Counts of successes in n trials</div></div>
+    <div class="card"><div class="card-title">Poisson</div><div class="card-desc">Number of events in fixed interval</div></div>
+  </div>
+
+  <div class="pagination">
+    <button class="page-btn prev" onclick="navigate('random-intro')">← <div><div class="page-meta">Previous</div>Random Intro</div></button>
+    <button class="page-btn next" onclick="navigate('random-permutation')"><div><div class="page-meta">Next</div>Random Permutation</div> →</button>
+  </div>
+</section>
+
+<!-- ══════════ RANDOM PERMUTATION ══════════ -->
+<section class="doc-section" id="sec-random-permutation">
+  <div class="breadcrumb"><a onclick="navigate('home')">Home</a><span>/</span>Random Permutation</div>
+  <div class="section-header">
+    <div class="section-tag">Random Module</div>
+    <h1>Random Permutation</h1>
+    <p class="lead">Randomly shuffle or permute arrays using <code>shuffle</code> and <code>permutation</code>.</p>
+  </div>
+
+  <pre><button class="copy-btn" onclick="copyCode(this)">Copy</button><code><span class="kw">from</span> <span class="var">numpy</span> <span class="kw">import</span> <span class="var">random</span>
+
+<span class="var">arr</span> <span class="op">=</span> <span class="fn">np.array</span>([<span class="num">1</span>,<span class="num">2</span>,<span class="num">3</span>,<span class="num">4</span>,<span class="num">5</span>])
+
+<span class="cmt"># shuffle — modifies in-place</span>
+<span class="var">random</span>.<span class="fn">shuffle</span>(<span class="var">arr</span>)
+<span class="fn">print</span>(<span class="var">arr</span>)   <span class="cmt"># e.g., [3 1 5 2 4]</span>
+
+<span class="cmt"># permutation — returns new array</span>
+<span class="var">p</span> <span class="op">=</span> <span class="var">random</span>.<span class="fn">permutation</span>([<span class="num">10</span>,<span class="num">20</span>,<span class="num">30</span>,<span class="num">40</span>])
+<span class="fn">print</span>(<span class="var">p</span>)    <span class="cmt"># e.g., [30 10 40 20]</span></code></pre>
+
+  <div class="pagination">
+    <button class="page-btn prev" onclick="navigate('data-distribution')">← <div><div class="page-meta">Previous</div>Data Distribution</div></button>
+    <button class="page-btn next" onclick="navigate('seaborn-module')"><div><div class="page-meta">Next</div>Seaborn Module</div> →</button>
+  </div>
+</section>
+
+<!-- ══════════ SEABORN MODULE ══════════ -->
+<section class="doc-section" id="sec-seaborn-module">
+  <div class="breadcrumb"><a onclick="navigate('home')">Home</a><span>/</span>Seaborn</div>
+  <div class="section-header">
+    <div class="section-tag">Random Module</div>
+    <h1>Seaborn Module</h1>
+    <p class="lead">Seaborn is a visualization library built on Matplotlib, ideal for plotting NumPy distributions.</p>
+  </div>
+
+  <pre><button class="copy-btn" onclick="copyCode(this)">Copy</button><code><span class="kw">import</span> <span class="var">seaborn</span> <span class="kw">as</span> <span class="var">sns</span>
+<span class="kw">from</span> <span class="var">numpy</span> <span class="kw">import</span> <span class="var">random</span>
+<span class="kw">import</span> <span class="var">matplotlib</span>.<span class="var">pyplot</span> <span class="kw">as</span> <span class="var">plt</span>
+
+<span class="cmt"># Distplot (KDE + histogram)</span>
+<span class="var">sns</span>.<span class="fn">displot</span>(<span class="var">random</span>.<span class="fn">normal</span>(<span class="attr">size</span><span class="op">=</span><span class="num">1000</span>), <span class="attr">kde</span><span class="op">=</span><span class="kw">True</span>)
+<span class="var">plt</span>.<span class="fn">show</span>()</code></pre>
+
+  <div class="note"><span class="note-icon">ℹ</span><p>Install Seaborn with <code>pip install seaborn</code>. It pairs naturally with NumPy random distributions to create informative visualizations.</p></div>
+
+  <div class="pagination">
+    <button class="page-btn prev" onclick="navigate('random-permutation')">← Previous</button>
+    <button class="page-btn next" onclick="navigate('normal-dist')">Next → Normal Distribution</button>
+  </div>
+</section>
+
+<!-- ══════════ DISTRIBUTIONS (batch) ══════════ -->
+<section class="doc-section" id="sec-normal-dist">
+  <div class="breadcrumb"><a onclick="navigate('home')">Home</a><span>/</span>Normal Distribution</div>
+  <div class="section-header"><div class="section-tag">Random Module</div><h1>Normal Distribution</h1><p class="lead">Also known as the Gaussian distribution — the classic bell curve defined by mean (μ) and standard deviation (σ).</p></div>
+  <pre><button class="copy-btn" onclick="copyCode(this)">Copy</button><code><span class="kw">from</span> <span class="var">numpy</span> <span class="kw">import</span> <span class="var">random</span>
+
+<span class="var">x</span> <span class="op">=</span> <span class="var">random</span>.<span class="fn">normal</span>(<span class="attr">loc</span><span class="op">=</span><span class="num">0</span>, <span class="attr">scale</span><span class="op">=</span><span class="num">1</span>, <span class="attr">size</span><span class="op">=</span><span class="num">1000</span>)
+<span class="cmt"># loc   = mean (μ)</span>
+<span class="cmt"># scale = std dev (σ)</span>
+<span class="fn">print</span>(<span class="var">x</span>.<span class="fn">mean</span>(), <span class="var">x</span>.<span class="fn">std</span>())</code></pre>
+  <dl><dt>loc</dt><dd>Mean of the distribution (default 0)</dd><dt>scale</dt><dd>Standard deviation (default 1)</dd><dt>size</dt><dd>Output shape</dd></dl>
+  <div class="pagination"><button class="page-btn prev" onclick="navigate('seaborn-module')">← Seaborn</button><button class="page-btn next" onclick="navigate('binomial-dist')">Binomial →</button></div>
+</section>
+
+<section class="doc-section" id="sec-binomial-dist">
+  <div class="breadcrumb"><a onclick="navigate('home')">Home</a><span>/</span>Binomial Distribution</div>
+  <div class="section-header"><div class="section-tag">Random Module</div><h1>Binomial Distribution</h1><p class="lead">Models the number of successes in <em>n</em> independent trials each with probability <em>p</em>.</p></div>
+  <pre><button class="copy-btn" onclick="copyCode(this)">Copy</button><code><span class="cmt"># 10 coin flips, p=0.5, 1000 experiments</span>
+<span class="var">x</span> <span class="op">=</span> <span class="var">random</span>.<span class="fn">binomial</span>(<span class="attr">n</span><span class="op">=</span><span class="num">10</span>, <span class="attr">p</span><span class="op">=</span><span class="num">0.5</span>, <span class="attr">size</span><span class="op">=</span><span class="num">1000</span>)
+<span class="fn">print</span>(<span class="var">x</span>[:10])  <span class="cmt"># e.g., [5 4 6 5 5 7 4 6 5 6]</span></code></pre>
+  <div class="pagination"><button class="page-btn prev" onclick="navigate('normal-dist')">← Normal</button><button class="page-btn next" onclick="navigate('poisson-dist')">Poisson →</button></div>
+</section>
+
+<section class="doc-section" id="sec-poisson-dist">
+  <div class="breadcrumb"><a onclick="navigate('home')">Home</a><span>/</span>Poisson Distribution</div>
+  <div class="section-header"><div class="section-tag">Random Module</div><h1>Poisson Distribution</h1><p class="lead">Estimates how many times an event occurs in a fixed interval, given a known average rate (λ).</p></div>
+  <pre><button class="copy-btn" onclick="copyCode(this)">Copy</button><code><span class="cmt"># avg 2 events per interval</span>
+<span class="var">x</span> <span class="op">=</span> <span class="var">random</span>.<span class="fn">poisson</span>(<span class="attr">lam</span><span class="op">=</span><span class="num">2</span>, <span class="attr">size</span><span class="op">=</span><span class="num">1000</span>)
+<span class="fn">print</span>(<span class="fn">np.unique</span>(<span class="var">x</span>, <span class="attr">return_counts</span><span class="op">=</span><span class="kw">True</span>))</code></pre>
+  <div class="pagination"><button class="page-btn prev" onclick="navigate('binomial-dist')">← Binomial</button><button class="page-btn next" onclick="navigate('uniform-dist')">Uniform →</button></div>
+</section>
+
+<section class="doc-section" id="sec-uniform-dist">
+  <div class="breadcrumb"><a onclick="navigate('home')">Home</a><span>/</span>Uniform Distribution</div>
+  <div class="section-header"><div class="section-tag">Random Module</div><h1>Uniform Distribution</h1><p class="lead">Every value in [low, high) has equal probability.</p></div>
+  <pre><button class="copy-btn" onclick="copyCode(this)">Copy</button><code><span class="var">x</span> <span class="op">=</span> <span class="var">random</span>.<span class="fn">uniform</span>(<span class="attr">low</span><span class="op">=</span><span class="num">0</span>, <span class="attr">high</span><span class="op">=</span><span class="num">10</span>, <span class="attr">size</span><span class="op">=</span><span class="num">1000</span>)
+<span class="fn">print</span>(<span class="var">x</span>.<span class="fn">min</span>(), <span class="var">x</span>.<span class="fn">max</span>())  <span class="cmt"># ~0.0  ~10.0</span></code></pre>
+  <div class="pagination"><button class="page-btn prev" onclick="navigate('poisson-dist')">← Poisson</button><button class="page-btn next" onclick="navigate('logistic-dist')">Logistic →</button></div>
+</section>
+
+<section class="doc-section" id="sec-logistic-dist">
+  <div class="breadcrumb"><a onclick="navigate('home')">Home</a><span>/</span>Logistic Distribution</div>
+  <div class="section-header"><div class="section-tag">Random Module</div><h1>Logistic Distribution</h1><p class="lead">Similar to normal but with heavier tails. Used in logistic regression models.</p></div>
+  <pre><button class="copy-btn" onclick="copyCode(this)">Copy</button><code><span class="var">x</span> <span class="op">=</span> <span class="var">random</span>.<span class="fn">logistic</span>(<span class="attr">loc</span><span class="op">=</span><span class="num">1</span>, <span class="attr">scale</span><span class="op">=</span><span class="num">2</span>, <span class="attr">size</span><span class="op">=</span><span class="num">1000</span>)</code></pre>
+  <div class="pagination"><button class="page-btn prev" onclick="navigate('uniform-dist')">← Uniform</button><button class="page-btn next" onclick="navigate('multinomial-dist')">Multinomial →</button></div>
+</section>
+
+<section class="doc-section" id="sec-multinomial-dist">
+  <div class="breadcrumb"><a onclick="navigate('home')">Home</a><span>/</span>Multinomial Distribution</div>
+  <div class="section-header"><div class="section-tag">Random Module</div><h1>Multinomial Distribution</h1><p class="lead">Generalization of binomial to more than two outcomes (like rolling a die).</p></div>
+  <pre><button class="copy-btn" onclick="copyCode(this)">Copy</button><code><span class="cmt"># Roll a 6-sided die 10 times, 5 experiments</span>
+<span class="var">x</span> <span class="op">=</span> <span class="var">random</span>.<span class="fn">multinomial</span>(<span class="attr">n</span><span class="op">=</span><span class="num">10</span>, <span class="attr">pvals</span><span class="op">=</span>[<span class="num">1</span><span class="op">/</span><span class="num">6</span>]*<span class="num">6</span>, <span class="attr">size</span><span class="op">=</span><span class="num">5</span>)
+<span class="fn">print</span>(<span class="var">x</span>)</code></pre>
+  <div class="pagination"><button class="page-btn prev" onclick="navigate('logistic-dist')">← Logistic</button><button class="page-btn next" onclick="navigate('exponential-dist')">Exponential →</button></div>
+</section>
+
+<section class="doc-section" id="sec-exponential-dist">
+  <div class="breadcrumb"><a onclick="navigate('home')">Home</a><span>/</span>Exponential Distribution</div>
+  <div class="section-header"><div class="section-tag">Random Module</div><h1>Exponential Distribution</h1><p class="lead">Models time between events in a Poisson process (e.g., time between arrivals).</p></div>
+  <pre><button class="copy-btn" onclick="copyCode(this)">Copy</button><code><span class="var">x</span> <span class="op">=</span> <span class="var">random</span>.<span class="fn">exponential</span>(<span class="attr">scale</span><span class="op">=</span><span class="num">2</span>, <span class="attr">size</span><span class="op">=</span><span class="num">1000</span>)
+<span class="cmt"># scale = 1/λ (inverse of rate)</span></code></pre>
+  <div class="pagination"><button class="page-btn prev" onclick="navigate('multinomial-dist')">← Multinomial</button><button class="page-btn next" onclick="navigate('chi-square-dist')">Chi Square →</button></div>
+</section>
+
+<section class="doc-section" id="sec-chi-square-dist">
+  <div class="breadcrumb"><a onclick="navigate('home')">Home</a><span>/</span>Chi Square</div>
+  <div class="section-header"><div class="section-tag">Random Module</div><h1>Chi Square Distribution</h1><p class="lead">Sum of squares of <em>df</em> standard normal variables. Used in hypothesis testing.</p></div>
+  <pre><button class="copy-btn" onclick="copyCode(this)">Copy</button><code><span class="var">x</span> <span class="op">=</span> <span class="var">random</span>.<span class="fn">chisquare</span>(<span class="attr">df</span><span class="op">=</span><span class="num">2</span>, <span class="attr">size</span><span class="op">=</span><span class="num">1000</span>)
+<span class="cmt"># df = degrees of freedom</span></code></pre>
+  <div class="pagination"><button class="page-btn prev" onclick="navigate('exponential-dist')">← Exponential</button><button class="page-btn next" onclick="navigate('rayleigh-dist')">Rayleigh →</button></div>
+</section>
+
+<section class="doc-section" id="sec-rayleigh-dist">
+  <div class="breadcrumb"><a onclick="navigate('home')">Home</a><span>/</span>Rayleigh Distribution</div>
+  <div class="section-header"><div class="section-tag">Random Module</div><h1>Rayleigh Distribution</h1><p class="lead">Used in signal processing to model magnitude of a 2D random vector.</p></div>
+  <pre><button class="copy-btn" onclick="copyCode(this)">Copy</button><code><span class="var">x</span> <span class="op">=</span> <span class="var">random</span>.<span class="fn">rayleigh</span>(<span class="attr">scale</span><span class="op">=</span><span class="num">2</span>, <span class="attr">size</span><span class="op">=</span><span class="num">1000</span>)</code></pre>
+  <div class="pagination"><button class="page-btn prev" onclick="navigate('chi-square-dist')">← Chi Square</button><button class="page-btn next" onclick="navigate('pareto-dist')">Pareto →</button></div>
+</section>
+
+<section class="doc-section" id="sec-pareto-dist">
+  <div class="breadcrumb"><a onclick="navigate('home')">Home</a><span>/</span>Pareto Distribution</div>
+  <div class="section-header"><div class="section-tag">Random Module</div><h1>Pareto Distribution</h1><p class="lead">Power-law distribution embodying the 80/20 rule — most effects come from a minority of causes.</p></div>
+  <pre><button class="copy-btn" onclick="copyCode(this)">Copy</button><code><span class="var">x</span> <span class="op">=</span> <span class="var">random</span>.<span class="fn">pareto</span>(<span class="attr">a</span><span class="op">=</span><span class="num">2</span>, <span class="attr">size</span><span class="op">=</span><span class="num">1000</span>)
+<span class="cmt"># a = shape parameter (Pareto index)</span></code></pre>
+  <div class="pagination"><button class="page-btn prev" onclick="navigate('rayleigh-dist')">← Rayleigh</button><button class="page-btn next" onclick="navigate('zipf-dist')">Zipf →</button></div>
+</section>
+
+<section class="doc-section" id="sec-zipf-dist">
+  <div class="breadcrumb"><a onclick="navigate('home')">Home</a><span>/</span>Zipf Distribution</div>
+  <div class="section-header"><div class="section-tag">Random Module</div><h1>Zipf Distribution</h1><p class="lead">Models rank-frequency relationships — word frequency in natural language follows Zipf's law.</p></div>
+  <pre><button class="copy-btn" onclick="copyCode(this)">Copy</button><code><span class="var">x</span> <span class="op">=</span> <span class="var">random</span>.<span class="fn">zipf</span>(<span class="attr">a</span><span class="op">=</span><span class="num">2</span>, <span class="attr">size</span><span class="op">=</span><span class="num">1000</span>)
+<span class="cmt"># a > 1 required</span></code></pre>
+  <div class="pagination"><button class="page-btn prev" onclick="navigate('pareto-dist')">← Pareto</button><button class="page-btn next" onclick="navigate('ufunc-intro')">ufunc Intro →</button></div>
+</section>
+
+<!-- ══════════ UFUNC INTRO ══════════ -->
+<section class="doc-section" id="sec-ufunc-intro">
+  <div class="breadcrumb"><a onclick="navigate('home')">Home</a><span>/</span>ufunc</div>
+  <div class="section-header">
+    <div class="section-tag">Universal Functions</div>
+    <h1>ufunc Introduction</h1>
+    <p class="lead">Universal functions (ufuncs) operate element-wise on ndarrays, support broadcasting, type casting, and other special features.</p>
+  </div>
+
+  <h2>What are ufuncs?</h2>
+  <p>ufuncs are NumPy functions that operate element-by-element on arrays. They are implemented in C, making them very fast. NumPy provides over 60 built-in ufuncs.</p>
+
+  <div class="card-grid">
+    <div class="card"><div class="card-icon">⚡</div><div class="card-title">Vectorized</div><div class="card-desc">Replace slow Python loops with fast C operations</div></div>
+    <div class="card"><div class="card-icon">📡</div><div class="card-title">Broadcasting</div><div class="card-desc">Operate on arrays of different (compatible) shapes</div></div>
+    <div class="card"><div class="card-icon">🔄</div><div class="card-title">Type Casting</div><div class="card-desc">Automatic conversion of dtypes where needed</div></div>
+  </div>
+
+  <pre><button class="copy-btn" onclick="copyCode(this)">Copy</button><code><span class="cmt"># ufunc example: np.add is a ufunc</span>
+<span class="var">a</span> <span class="op">=</span> <span class="fn">np.array</span>([<span class="num">1</span>,<span class="num">2</span>,<span class="num">3</span>])
+<span class="var">b</span> <span class="op">=</span> <span class="fn">np.array</span>([<span class="num">4</span>,<span class="num">5</span>,<span class="num">6</span>])
+
+<span class="fn">print</span>(<span class="fn">np.add</span>(<span class="var">a</span>, <span class="var">b</span>))         <span class="cmt"># [5 7 9]</span>
+<span class="fn">print</span>(<span class="var">a</span> <span class="op">+</span> <span class="var">b</span>)               <span class="cmt"># same — uses np.add internally</span>
+<span class="fn">print</span>(<span class="fn">type</span>(<span class="var">np</span>.<span class="attr">add</span>))         <span class="cmt"># &lt;class 'numpy.ufunc'&gt;</span></code></pre>
+
+  <div class="pagination">
+    <button class="page-btn prev" onclick="navigate('zipf-dist')">← Zipf</button>
+    <button class="page-btn next" onclick="navigate('ufunc-create')">Create ufunc →</button>
+  </div>
+</section>
+
+<!-- ══════════ UFUNC CREATE ══════════ -->
+<section class="doc-section" id="sec-ufunc-create">
+  <div class="breadcrumb"><a onclick="navigate('home')">Home</a><span>/</span>Create ufunc</div>
+  <div class="section-header">
+    <div class="section-tag">Universal Functions</div>
+    <h1>Create ufunc</h1>
+    <p class="lead">Create custom ufuncs using <code>np.frompyfunc()</code> to wrap Python functions for element-wise array operations.</p>
+  </div>
+
+  <pre><button class="copy-btn" onclick="copyCode(this)">Copy</button><code><span class="cmt"># Define a Python function</span>
+<span class="kw">def</span> <span class="fn">my_add</span>(<span class="var">x</span>, <span class="var">y</span>):
+    <span class="kw">return</span> <span class="var">x</span> <span class="op">+</span> <span class="var">y</span>
+
+<span class="cmt"># Convert to ufunc (nin=2 inputs, nout=1 output)</span>
+<span class="var">my_add_ufunc</span> <span class="op">=</span> <span class="fn">np.frompyfunc</span>(<span class="var">my_add</span>, <span class="num">2</span>, <span class="num">1</span>)
+
+<span class="var">a</span> <span class="op">=</span> <span class="fn">np.array</span>([<span class="num">1</span>,<span class="num">2</span>,<span class="num">3</span>])
+<span class="var">b</span> <span class="op">=</span> <span class="fn">np.array</span>([<span class="num">4</span>,<span class="num">5</span>,<span class="num">6</span>])
+<span class="fn">print</span>(<span class="var">my_add_ufunc</span>(<span class="var">a</span>, <span class="var">b</span>))   <span class="cmt"># [5 7 9]</span>
+
+<span class="cmt"># Check type</span>
+<span class="fn">print</span>(<span class="fn">type</span>(<span class="var">my_add_ufunc</span>))    <span class="cmt"># &lt;class 'numpy.ufunc'&gt;</span></code></pre>
+
+  <div class="pagination">
+    <button class="page-btn prev" onclick="navigate('ufunc-intro')">← ufunc Intro</button>
+    <button class="page-btn next" onclick="navigate('ufunc-arithmetic')">Arithmetic →</button>
+  </div>
+</section>
+
+<!-- ══════════ UFUNC ARITHMETIC ══════════ -->
+<section class="doc-section" id="sec-ufunc-arithmetic">
+  <div class="breadcrumb"><a onclick="navigate('home')">Home</a><span>/</span>ufunc Arithmetic</div>
+  <div class="section-header">
+    <div class="section-tag">Universal Functions</div>
+    <h1>Simple Arithmetic</h1>
+    <p class="lead">NumPy provides arithmetic ufuncs for element-wise operations: add, subtract, multiply, divide, power, mod, and more.</p>
+  </div>
+
+  <div class="table-wrap"><table>
+    <tr><th>ufunc</th><th>Operator</th><th>Description</th></tr>
+    <tr><td><code>np.add(a,b)</code></td><td><code>a + b</code></td><td>Addition</td></tr>
+    <tr><td><code>np.subtract(a,b)</code></td><td><code>a - b</code></td><td>Subtraction</td></tr>
+    <tr><td><code>np.multiply(a,b)</code></td><td><code>a * b</code></td><td>Multiplication</td></tr>
+    <tr><td><code>np.divide(a,b)</code></td><td><code>a / b</code></td><td>Division (float)</td></tr>
+    <tr><td><code>np.floor_divide(a,b)</code></td><td><code>a // b</code></td><td>Floor division</td></tr>
+    <tr><td><code>np.power(a,b)</code></td><td><code>a ** b</code></td><td>Exponentiation</td></tr>
+    <tr><td><code>np.mod(a,b)</code></td><td><code>a % b</code></td><td>Modulus (remainder)</td></tr>
+    <tr><td><code>np.absolute(a)</code></td><td><code>abs(a)</code></td><td>Absolute value</td></tr>
+  </table></div>
+
+  <pre><button class="copy-btn" onclick="copyCode(this)">Copy</button><code><span class="var">a</span> <span class="op">=</span> <span class="fn">np.array</span>([<span class="num">10</span>, <span class="num">20</span>, <span class="num">30</span>, <span class="num">40</span>])
+<span class="var">b</span> <span class="op">=</span> <span class="fn">np.array</span>([<span class="num">3</span>,  <span class="num">4</span>,  <span class="num">5</span>,  <span class="num">6</span>])
+
+<span class="fn">print</span>(<span class="fn">np.add</span>(<span class="var">a</span>,<span class="var">b</span>))          <span class="cmt"># [13 24 35 46]</span>
+<span class="fn">print</span>(<span class="fn">np.multiply</span>(<span class="var">a</span>,<span class="var">b</span>))     <span class="cmt"># [30 80 150 240]</span>
+<span class="fn">print</span>(<span class="fn">np.mod</span>(<span class="var">a</span>,<span class="var">b</span>))           <span class="cmt"># [1 0 0 4]</span></code></pre>
+
+  <div class="pagination">
+    <button class="page-btn prev" onclick="navigate('ufunc-create')">← Create ufunc</button>
+    <button class="page-btn next" onclick="navigate('ufunc-rounding')">Rounding →</button>
+  </div>
+</section>
+
+<!-- ══════════ UFUNC ROUNDING ══════════ -->
+<section class="doc-section" id="sec-ufunc-rounding">
+  <div class="breadcrumb"><a onclick="navigate('home')">Home</a><span>/</span>ufunc Rounding</div>
+  <div class="section-header">
+    <div class="section-tag">Universal Functions</div>
+    <h1>Rounding Decimals</h1>
+    <p class="lead">NumPy provides several rounding functions for controlling decimal precision.</p>
+  </div>
+
+  <div class="table-wrap"><table>
+    <tr><th>Function</th><th>Description</th></tr>
+    <tr><td><code>np.around(a, dec)</code></td><td>Round to <em>dec</em> decimal places</td></tr>
+    <tr><td><code>np.floor(a)</code></td><td>Round down to nearest integer</td></tr>
+    <tr><td><code>np.ceil(a)</code></td><td>Round up to nearest integer</td></tr>
+    <tr><td><code>np.trunc(a)</code></td><td>Truncate decimal part</td></tr>
+    <tr><td><code>np.fix(a)</code></td><td>Round toward zero</td></tr>
+  </table></div>
+
+  <pre><button class="copy-btn" onclick="copyCode(this)">Copy</button><code><span class="var">arr</span> <span class="op">=</span> <span class="fn">np.array</span>([<span class="num">3.1415</span>, <span class="num">2.7182</span>, <span class="num">-1.618</span>])
+
+<span class="fn">print</span>(<span class="fn">np.around</span>(<span class="var">arr</span>, <span class="num">2</span>))  <span class="cmt"># [3.14  2.72 -1.62]</span>
+<span class="fn">print</span>(<span class="fn">np.floor</span>(<span class="var">arr</span>))      <span class="cmt"># [3.  2. -2.]</span>
+<span class="fn">print</span>(<span class="fn">np.ceil</span>(<span class="var">arr</span>))       <span class="cmt"># [4.  3. -1.]</span>
+<span class="fn">print</span>(<span class="fn">np.trunc</span>(<span class="var">arr</span>))      <span class="cmt"># [3.  2. -1.]</span></code></pre>
+
+  <div class="pagination">
+    <button class="page-btn prev" onclick="navigate('ufunc-arithmetic')">← Arithmetic</button>
+    <button class="page-btn next" onclick="navigate('ufunc-logs')">Logs →</button>
+  </div>
+</section>
+
+<!-- ══════════ UFUNC LOGS ══════════ -->
+<section class="doc-section" id="sec-ufunc-logs">
+  <div class="breadcrumb"><a onclick="navigate('home')">Home</a><span>/</span>ufunc Logs</div>
+  <div class="section-header">
+    <div class="section-tag">Universal Functions</div>
+    <h1>Logarithms</h1>
+    <p class="lead">NumPy provides logarithm functions for base-2, base-10, and natural log.</p>
+  </div>
+
+  <pre><button class="copy-btn" onclick="copyCode(this)">Copy</button><code><span class="var">arr</span> <span class="op">=</span> <span class="fn">np.array</span>([<span class="num">1</span>, <span class="num">2</span>, <span class="num">4</span>, <span class="num">8</span>, <span class="num">100</span>])
+
+<span class="fn">print</span>(<span class="fn">np.log</span>(<span class="var">arr</span>))    <span class="cmt"># natural log (ln)</span>
+<span class="fn">print</span>(<span class="fn">np.log2</span>(<span class="var">arr</span>))   <span class="cmt"># log base-2</span>
+<span class="fn">print</span>(<span class="fn">np.log10</span>(<span class="var">arr</span>))  <span class="cmt"># log base-10</span>
+
+<span class="cmt"># Custom base using change-of-base formula</span>
+<span class="kw">def</span> <span class="fn">log_base</span>(<span class="var">x</span>, <span class="var">base</span>):
+    <span class="kw">return</span> <span class="fn">np.log</span>(<span class="var">x</span>) <span class="op">/</span> <span class="fn">np.log</span>(<span class="var">base</span>)
+
+<span class="fn">print</span>(<span class="fn">log_base</span>(<span class="num">27</span>, <span class="num">3</span>))   <span class="cmt"># 3.0</span></code></pre>
+
+  <div class="pagination">
+    <button class="page-btn prev" onclick="navigate('ufunc-rounding')">← Rounding</button>
+    <button class="page-btn next" onclick="navigate('ufunc-summations')">Summations →</button>
+  </div>
+</section>
+
+<!-- ══════════ UFUNC SUMMATIONS ══════════ -->
+<section class="doc-section" id="sec-ufunc-summations">
+  <div class="breadcrumb"><a onclick="navigate('home')">Home</a><span>/</span>ufunc Summations</div>
+  <div class="section-header">
+    <div class="section-tag">Universal Functions</div>
+    <h1>Summations</h1>
+    <p class="lead">Compute sums with <code>np.sum()</code>, cumulative sums with <code>np.cumsum()</code>, and more.</p>
+  </div>
+
+  <pre><button class="copy-btn" onclick="copyCode(this)">Copy</button><code><span class="var">a</span> <span class="op">=</span> <span class="fn">np.array</span>([<span class="num">1</span>,<span class="num">2</span>,<span class="num">3</span>])
+<span class="var">b</span> <span class="op">=</span> <span class="fn">np.array</span>([<span class="num">4</span>,<span class="num">5</span>,<span class="num">6</span>])
+
+<span class="fn">print</span>(<span class="fn">np.sum</span>(<span class="var">a</span>))                    <span class="cmt"># 6</span>
+<span class="fn">print</span>(<span class="fn">np.sum</span>([<span class="var">a</span>,<span class="var">b</span>]))               <span class="cmt"># 21</span>
+<span class="fn">print</span>(<span class="fn">np.sum</span>([<span class="var">a</span>,<span class="var">b</span>], <span class="attr">axis</span><span class="op">=</span><span class="num">1</span>))     <span class="cmt"># [6 15]</span>
+<span class="fn">print</span>(<span class="fn">np.cumsum</span>(<span class="var">a</span>))                 <span class="cmt"># [1 3 6]</span>
+
+<span class="cmt"># np.add.reduce — same as np.sum</span>
+<span class="fn">print</span>(<span class="var">np</span>.<span class="attr">add</span>.<span class="fn">reduce</span>(<span class="var">a</span>))           <span class="cmt"># 6</span></code></pre>
+
+  <div class="pagination">
+    <button class="page-btn prev" onclick="navigate('ufunc-logs')">← Logs</button>
+    <button class="page-btn next" onclick="navigate('ufunc-products')">Products →</button>
+  </div>
+</section>
+
+<!-- ══════════ UFUNC PRODUCTS ══════════ -->
+<section class="doc-section" id="sec-ufunc-products">
+  <div class="breadcrumb"><a onclick="navigate('home')">Home</a><span>/</span>ufunc Products</div>
+  <div class="section-header">
+    <div class="section-tag">Universal Functions</div>
+    <h1>Products</h1>
+    <p class="lead">Compute element-wise and cumulative products with <code>np.prod()</code> and <code>np.cumprod()</code>.</p>
+  </div>
+
+  <pre><button class="copy-btn" onclick="copyCode(this)">Copy</button><code><span class="var">a</span> <span class="op">=</span> <span class="fn">np.array</span>([<span class="num">1</span>,<span class="num">2</span>,<span class="num">3</span>,<span class="num">4</span>])
+<span class="var">b</span> <span class="op">=</span> <span class="fn">np.array</span>([<span class="num">5</span>,<span class="num">6</span>,<span class="num">7</span>,<span class="num">8</span>])
+
+<span class="fn">print</span>(<span class="fn">np.prod</span>(<span class="var">a</span>))                   <span class="cmt"># 24</span>
+<span class="fn">print</span>(<span class="fn">np.prod</span>([<span class="var">a</span>,<span class="var">b</span>], <span class="attr">axis</span><span class="op">=</span><span class="num">1</span>))    <span class="cmt"># [24, 1680]</span>
+<span class="fn">print</span>(<span class="fn">np.cumprod</span>(<span class="var">a</span>))               <span class="cmt"># [1 2 6 24]</span>
+
+<span class="cmt"># multiply.reduce</span>
+<span class="fn">print</span>(<span class="var">np</span>.<span class="attr">multiply</span>.<span class="fn">reduce</span>(<span class="var">a</span>))     <span class="cmt"># 24</span></code></pre>
+
+  <div class="pagination">
+    <button class="page-btn prev" onclick="navigate('ufunc-summations')">← Summations</button>
+    <button class="page-btn next" onclick="navigate('ufunc-differences')">Differences →</button>
+  </div>
+</section>
+
+<!-- ══════════ UFUNC DIFFERENCES ══════════ -->
+<section class="doc-section" id="sec-ufunc-differences">
+  <div class="breadcrumb"><a onclick="navigate('home')">Home</a><span>/</span>ufunc Differences</div>
+  <div class="section-header">
+    <div class="section-tag">Universal Functions</div>
+    <h1>Differences</h1>
+    <p class="lead">Compute discrete differences (first, second, and higher order) with <code>np.diff()</code>.</p>
+  </div>
+
+  <pre><button class="copy-btn" onclick="copyCode(this)">Copy</button><code><span class="var">a</span> <span class="op">=</span> <span class="fn">np.array</span>([<span class="num">10</span>, <span class="num">15</span>, <span class="num">25</span>, <span class="num">5</span>, <span class="num">50</span>])
+
+<span class="fn">print</span>(<span class="fn">np.diff</span>(<span class="var">a</span>))              <span class="cmt"># [  5  10 -20  45]  — 1st order</span>
+<span class="fn">print</span>(<span class="fn">np.diff</span>(<span class="var">a</span>, <span class="attr">n</span><span class="op">=</span><span class="num">2</span>))        <span class="cmt"># [  5 -30  65]  — 2nd order</span>
+
+<span class="cmt"># 2D differences along an axis</span>
+<span class="var">m</span> <span class="op">=</span> <span class="fn">np.array</span>([[<span class="num">1</span>,<span class="num">2</span>,<span class="num">4</span>],[<span class="num">1</span>,<span class="num">3</span>,<span class="num">6</span>]])
+<span class="fn">print</span>(<span class="fn">np.diff</span>(<span class="var">m</span>, <span class="attr">axis</span><span class="op">=</span><span class="num">0</span>))    <span class="cmt"># row diff</span>
+<span class="fn">print</span>(<span class="fn">np.diff</span>(<span class="var">m</span>, <span class="attr">axis</span><span class="op">=</span><span class="num">1</span>))    <span class="cmt"># col diff</span></code></pre>
+
+  <div class="pagination">
+    <button class="page-btn prev" onclick="navigate('ufunc-products')">← Products</button>
+    <button class="page-btn next" onclick="navigate('ufunc-lcm')">LCM →</button>
+  </div>
+</section>
+
+<!-- ══════════ LCM & GCD ══════════ -->
+<section class="doc-section" id="sec-ufunc-lcm">
+  <div class="breadcrumb"><a onclick="navigate('home')">Home</a><span>/</span>LCM</div>
+  <div class="section-header">
+    <div class="section-tag">Universal Functions</div>
+    <h1>Finding LCM</h1>
+    <p class="lead">Find the Least Common Multiple element-wise or across an array using <code>np.lcm</code>.</p>
+  </div>
+
+  <pre><button class="copy-btn" onclick="copyCode(this)">Copy</button><code><span class="cmt"># LCM of two numbers</span>
+<span class="fn">print</span>(<span class="fn">np.lcm</span>(<span class="num">4</span>, <span class="num">6</span>))           <span class="cmt"># 12</span>
+
+<span class="cmt"># LCM across array using reduce</span>
+<span class="var">arr</span> <span class="op">=</span> <span class="fn">np.array</span>([<span class="num">3</span>, <span class="num">6</span>, <span class="num">9</span>])
+<span class="fn">print</span>(<span class="fn">np.lcm</span>.<span class="fn">reduce</span>(<span class="var">arr</span>))    <span class="cmt"># 18</span>
+
+<span class="cmt"># Element-wise LCM</span>
+<span class="var">a</span> <span class="op">=</span> <span class="fn">np.array</span>([<span class="num">4</span>,<span class="num">6</span>,<span class="num">8</span>])
+<span class="var">b</span> <span class="op">=</span> <span class="fn">np.array</span>([<span class="num">3</span>,<span class="num">9</span>,<span class="num">4</span>])
+<span class="fn">print</span>(<span class="fn">np.lcm</span>(<span class="var">a</span>, <span class="var">b</span>))          <span class="cmt"># [12 18  8]</span></code></pre>
+
+  <div class="pagination">
+    <button class="page-btn prev" onclick="navigate('ufunc-differences')">← Differences</button>
+    <button class="page-btn next" onclick="navigate('ufunc-gcd')">GCD →</button>
+  </div>
+</section>
+
+<section class="doc-section" id="sec-ufunc-gcd">
+  <div class="breadcrumb"><a onclick="navigate('home')">Home</a><span>/</span>GCD</div>
+  <div class="section-header">
+    <div class="section-tag">Universal Functions</div>
+    <h1>Finding GCD</h1>
+    <p class="lead">Find the Greatest Common Divisor using <code>np.gcd</code>.</p>
+  </div>
+
+  <pre><button class="copy-btn" onclick="copyCode(this)">Copy</button><code><span class="fn">print</span>(<span class="fn">np.gcd</span>(<span class="num">12</span>, <span class="num">18</span>))          <span class="cmt"># 6</span>
+
+<span class="var">arr</span> <span class="op">=</span> <span class="fn">np.array</span>([<span class="num">12</span>, <span class="num">18</span>, <span class="num">24</span>])
+<span class="fn">print</span>(<span class="fn">np.gcd</span>.<span class="fn">reduce</span>(<span class="var">arr</span>))      <span class="cmt"># 6</span>
+
+<span class="var">a</span> <span class="op">=</span> <span class="fn">np.array</span>([<span class="num">12</span>, <span class="num">15</span>, <span class="num">20</span>])
+<span class="var">b</span> <span class="op">=</span> <span class="fn">np.array</span>([<span class="num">8</span>,  <span class="num">25</span>, <span class="num">16</span>])
+<span class="fn">print</span>(<span class="fn">np.gcd</span>(<span class="var">a</span>, <span class="var">b</span>))             <span class="cmt"># [4 5 4]</span></code></pre>
+
+  <div class="pagination">
+    <button class="page-btn prev" onclick="navigate('ufunc-lcm')">← LCM</button>
+    <button class="page-btn next" onclick="navigate('ufunc-trig')">Trigonometric →</button>
+  </div>
+</section>
+
+<!-- ══════════ TRIG ══════════ -->
+<section class="doc-section" id="sec-ufunc-trig">
+  <div class="breadcrumb"><a onclick="navigate('home')">Home</a><span>/</span>Trigonometric</div>
+  <div class="section-header">
+    <div class="section-tag">Universal Functions</div>
+    <h1>Trigonometric Functions</h1>
+    <p class="lead">NumPy provides sin, cos, tan, and their inverses, all operating on radians.</p>
+  </div>
+
+  <div class="table-wrap"><table>
+    <tr><th>Function</th><th>Description</th></tr>
+    <tr><td><code>np.sin(x)</code></td><td>Sine (radians)</td></tr>
+    <tr><td><code>np.cos(x)</code></td><td>Cosine (radians)</td></tr>
+    <tr><td><code>np.tan(x)</code></td><td>Tangent (radians)</td></tr>
+    <tr><td><code>np.arcsin(x)</code></td><td>Inverse sine → radians</td></tr>
+    <tr><td><code>np.arccos(x)</code></td><td>Inverse cosine → radians</td></tr>
+    <tr><td><code>np.arctan(x)</code></td><td>Inverse tangent → radians</td></tr>
+    <tr><td><code>np.deg2rad(x)</code></td><td>Degrees to radians</td></tr>
+    <tr><td><code>np.rad2deg(x)</code></td><td>Radians to degrees</td></tr>
+  </table></div>
+
+  <pre><button class="copy-btn" onclick="copyCode(this)">Copy</button><code><span class="var">angles</span> <span class="op">=</span> <span class="fn">np.array</span>([<span class="num">0</span>, <span class="num">30</span>, <span class="num">45</span>, <span class="num">60</span>, <span class="num">90</span>])
+<span class="var">rad</span> <span class="op">=</span> <span class="fn">np.deg2rad</span>(<span class="var">angles</span>)
+
+<span class="fn">print</span>(<span class="fn">np.sin</span>(<span class="var">rad</span>))
+<span class="cmt"># [0.    0.5   0.707 0.866 1.   ]</span>
+
+<span class="cmt"># hypotenuse using hypot</span>
+<span class="fn">print</span>(<span class="fn">np.hypot</span>(<span class="num">3</span>, <span class="num">4</span>))   <span class="cmt"># 5.0</span></code></pre>
+
+  <div class="pagination">
+    <button class="page-btn prev" onclick="navigate('ufunc-gcd')">← GCD</button>
+    <button class="page-btn next" onclick="navigate('ufunc-hyperbolic')">Hyperbolic →</button>
+  </div>
+</section>
+
+<!-- ══════════ HYPERBOLIC ══════════ -->
+<section class="doc-section" id="sec-ufunc-hyperbolic">
+  <div class="breadcrumb"><a onclick="navigate('home')">Home</a><span>/</span>Hyperbolic</div>
+  <div class="section-header">
+    <div class="section-tag">Universal Functions</div>
+    <h1>Hyperbolic Functions</h1>
+    <p class="lead">Hyperbolic analogues of trigonometric functions used in physics, engineering, and deep learning activations.</p>
+  </div>
+
+  <div class="table-wrap"><table>
+    <tr><th>Function</th><th>Description</th></tr>
+    <tr><td><code>np.sinh(x)</code></td><td>Hyperbolic sine</td></tr>
+    <tr><td><code>np.cosh(x)</code></td><td>Hyperbolic cosine</td></tr>
+    <tr><td><code>np.tanh(x)</code></td><td>Hyperbolic tangent — activation function</td></tr>
+    <tr><td><code>np.arcsinh(x)</code></td><td>Inverse hyperbolic sine</td></tr>
+    <tr><td><code>np.arccosh(x)</code></td><td>Inverse hyperbolic cosine</td></tr>
+    <tr><td><code>np.arctanh(x)</code></td><td>Inverse hyperbolic tangent</td></tr>
+  </table></div>
+
+  <pre><button class="copy-btn" onclick="copyCode(this)">Copy</button><code><span class="var">x</span> <span class="op">=</span> <span class="fn">np.array</span>([<span class="num">0</span>, <span class="num">0.5</span>, <span class="num">1.0</span>, <span class="num">2.0</span>])
+<span class="fn">print</span>(<span class="fn">np.sinh</span>(<span class="var">x</span>))   <span class="cmt"># [0.    0.521 1.175 3.627]</span>
+<span class="fn">print</span>(<span class="fn">np.tanh</span>(<span class="var">x</span>))   <span class="cmt"># [0.    0.462 0.762 0.964]</span></code></pre>
+
+  <div class="pagination">
+    <button class="page-btn prev" onclick="navigate('ufunc-trig')">← Trigonometric</button>
+    <button class="page-btn next" onclick="navigate('ufunc-set-ops')">Set Operations →</button>
+  </div>
+</section>
+
+<!-- ══════════ SET OPERATIONS ══════════ -->
+<section class="doc-section" id="sec-ufunc-set-ops">
+  <div class="breadcrumb"><a onclick="navigate('home')">Home</a><span>/</span>Set Operations</div>
+  <div class="section-header">
+    <div class="section-tag">Universal Functions</div>
+    <h1>Set Operations</h1>
+    <p class="lead">Perform set-theoretic operations on 1-D arrays: union, intersection, difference, and unique.</p>
+  </div>
+
+  <div class="table-wrap"><table>
+    <tr><th>Function</th><th>Description</th></tr>
+    <tr><td><code>np.unique(a)</code></td><td>Unique sorted elements</td></tr>
+    <tr><td><code>np.union1d(a, b)</code></td><td>Union (all unique elements)</td></tr>
+    <tr><td><code>np.intersect1d(a, b)</code></td><td>Common elements</td></tr>
+    <tr><td><code>np.setdiff1d(a, b)</code></td><td>In a but not in b</td></tr>
+    <tr><td><code>np.setxor1d(a, b)</code></td><td>Exclusive-or (not in both)</td></tr>
+    <tr><td><code>np.in1d(a, b)</code></td><td>Test membership elementwise</td></tr>
+  </table></div>
+
+  <pre><button class="copy-btn" onclick="copyCode(this)">Copy</button><code><span class="var">a</span> <span class="op">=</span> <span class="fn">np.array</span>([<span class="num">1</span>,<span class="num">2</span>,<span class="num">3</span>,<span class="num">4</span>,<span class="num">3</span>,<span class="num">2</span>])
+<span class="var">b</span> <span class="op">=</span> <span class="fn">np.array</span>([<span class="num">3</span>,<span class="num">4</span>,<span class="num">5</span>,<span class="num">6</span>])
+
+<span class="fn">print</span>(<span class="fn">np.unique</span>(<span class="var">a</span>))              <span class="cmt"># [1 2 3 4]</span>
+<span class="fn">print</span>(<span class="fn">np.union1d</span>(<span class="var">a</span>,<span class="var">b</span>))          <span class="cmt"># [1 2 3 4 5 6]</span>
+<span class="fn">print</span>(<span class="fn">np.intersect1d</span>(<span class="var">a</span>,<span class="var">b</span>))     <span class="cmt"># [3 4]</span>
+<span class="fn">print</span>(<span class="fn">np.setdiff1d</span>(<span class="var">a</span>,<span class="var">b</span>))       <span class="cmt"># [1 2]</span>
+<span class="fn">print</span>(<span class="fn">np.setxor1d</span>(<span class="var">a</span>,<span class="var">b</span>))        <span class="cmt"># [1 2 5 6]</span></code></pre>
+
+  <div class="pagination">
+    <button class="page-btn prev" onclick="navigate('ufunc-hyperbolic')">← Hyperbolic</button>
+    <button class="page-btn" onclick="navigate('home')">🏠 Back to Home</button>
+  </div>
+</section>
+
+</main>
+</div>
+
+<script>
+// ── DATA ──────────────────────────────────────────────────────────────────
+const pages = [
+  {id:'home',title:'Home',cat:''},
+  {id:'intro',title:'Introduction',cat:'Getting Started'},
+  {id:'getting-started',title:'Getting Started',cat:'Getting Started'},
+  {id:'creating-arrays',title:'Creating Arrays',cat:'Arrays'},
+  {id:'array-indexing',title:'Array Indexing',cat:'Arrays'},
+  {id:'array-slicing',title:'Array Slicing',cat:'Arrays'},
+  {id:'data-types',title:'Data Types',cat:'Arrays'},
+  {id:'copy-vs-view',title:'Copy vs View',cat:'Arrays'},
+  {id:'array-shape',title:'Array Shape',cat:'Arrays'},
+  {id:'array-reshape',title:'Array Reshape',cat:'Arrays'},
+  {id:'array-iterating',title:'Array Iterating',cat:'Arrays'},
+  {id:'array-join',title:'Array Join',cat:'Arrays'},
+  {id:'array-split',title:'Array Split',cat:'Arrays'},
+  {id:'array-search',title:'Array Search',cat:'Arrays'},
+  {id:'array-sort',title:'Array Sort',cat:'Arrays'},
+  {id:'array-filter',title:'Array Filter',cat:'Arrays'},
+  {id:'random-intro',title:'Random Intro',cat:'Random Module'},
+  {id:'data-distribution',title:'Data Distribution',cat:'Random Module'},
+  {id:'random-permutation',title:'Random Permutation',cat:'Random Module'},
+  {id:'seaborn-module',title:'Seaborn Module',cat:'Random Module'},
+  {id:'normal-dist',title:'Normal Distribution',cat:'Random Module'},
+  {id:'binomial-dist',title:'Binomial Distribution',cat:'Random Module'},
+  {id:'poisson-dist',title:'Poisson Distribution',cat:'Random Module'},
+  {id:'uniform-dist',title:'Uniform Distribution',cat:'Random Module'},
+  {id:'logistic-dist',title:'Logistic Distribution',cat:'Random Module'},
+  {id:'multinomial-dist',title:'Multinomial Distribution',cat:'Random Module'},
+  {id:'exponential-dist',title:'Exponential Distribution',cat:'Random Module'},
+  {id:'chi-square-dist',title:'Chi Square Distribution',cat:'Random Module'},
+  {id:'rayleigh-dist',title:'Rayleigh Distribution',cat:'Random Module'},
+  {id:'pareto-dist',title:'Pareto Distribution',cat:'Random Module'},
+  {id:'zipf-dist',title:'Zipf Distribution',cat:'Random Module'},
+  {id:'ufunc-intro',title:'ufunc Introduction',cat:'Universal Functions'},
+  {id:'ufunc-create',title:'Create ufunc',cat:'Universal Functions'},
+  {id:'ufunc-arithmetic',title:'Simple Arithmetic',cat:'Universal Functions'},
+  {id:'ufunc-rounding',title:'Rounding Decimals',cat:'Universal Functions'},
+  {id:'ufunc-logs',title:'Logarithms',cat:'Universal Functions'},
+  {id:'ufunc-summations',title:'Summations',cat:'Universal Functions'},
+  {id:'ufunc-products',title:'Products',cat:'Universal Functions'},
+  {id:'ufunc-differences',title:'Differences',cat:'Universal Functions'},
+  {id:'ufunc-lcm',title:'Finding LCM',cat:'Universal Functions'},
+  {id:'ufunc-gcd',title:'Finding GCD',cat:'Universal Functions'},
+  {id:'ufunc-trig',title:'Trigonometric',cat:'Universal Functions'},
+  {id:'ufunc-hyperbolic',title:'Hyperbolic',cat:'Universal Functions'},
+  {id:'ufunc-set-ops',title:'Set Operations',cat:'Universal Functions'},
+];
+
+// ── BUILD TOPICS GRID ──────────────────────────────────────────────────────
+const grid = document.getElementById('topics-grid');
+pages.filter(p=>p.id!=='home').forEach((p,i) => {
+  const div = document.createElement('div');
+  div.className = 'topic-card';
+  div.onclick = () => navigate(p.id);
+  div.innerHTML = `<div class="topic-card-num">${String(i+1).padStart(2,'0')}</div>
+    <div class="topic-card-title">${p.title}</div>
+    <div class="topic-card-cat">${p.cat}</div>`;
+  grid.appendChild(div);
+});
+
+// ── NAVIGATION ────────────────────────────────────────────────────────────
+let current = 'home';
+
+function navigate(id) {
+  document.querySelectorAll('.doc-section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
+
+  const sec = document.getElementById('sec-' + id);
+  if (sec) {
+    sec.classList.add('active');
+    current = id;
+    document.getElementById('main-content').scrollTo ? window.scrollTo(0,0) : null;
+    window.scrollTo(0,0);
+  }
+
+  // Highlight sidebar link
+  document.querySelectorAll('.sidebar-link').forEach(l => {
+    const fn = l.getAttribute('onclick') || '';
+    if (fn.includes(`'${id}'`)) l.classList.add('active');
+  });
+
+  closeSidebar();
+  updateProgress();
+}
+
+// ── SEARCH ────────────────────────────────────────────────────────────────
+function searchDocs(q) {
+  if (!q.trim()) return;
+  q = q.toLowerCase();
+  const match = pages.find(p =>
+    p.title.toLowerCase().includes(q) ||
+    p.cat.toLowerCase().includes(q) ||
+    p.id.includes(q)
+  );
+  if (match) navigate(match.id);
+}
+
+document.getElementById('search-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') searchDocs(e.target.value);
+});
+
+// ── PROGRESS BAR ──────────────────────────────────────────────────────────
+function updateProgress() {
+  const idx = pages.findIndex(p => p.id === current);
+  const pct = idx >= 0 ? (idx / (pages.length - 1)) * 100 : 0;
+  document.getElementById('progress').style.width = pct + '%';
+}
+
+// ── COPY CODE ─────────────────────────────────────────────────────────────
+function copyCode(btn) {
+  const pre = btn.parentElement;
+  const code = pre.querySelector('code').innerText;
+  navigator.clipboard.writeText(code).then(() => {
+    btn.textContent = 'Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => {
+      btn.textContent = 'Copy';
+      btn.classList.remove('copied');
+    }, 2000);
+  });
+}
+
+// ── SIDEBAR TOGGLE ────────────────────────────────────────────────────────
+function toggleSidebar() {
+  const s = document.getElementById('sidebar');
+  const o = document.getElementById('overlay');
+  s.classList.toggle('open');
+  o.classList.toggle('open');
+}
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('overlay').classList.remove('open');
+}
+
+// ── KEYBOARD SHORTCUT ─────────────────────────────────────────────────────
+document.addEventListener('keydown', e => {
+  if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+    e.preventDefault();
+    document.getElementById('search-input').focus();
+  }
+});
+
+// Init
+navigate('home');
+</script>
+</body>
+</html>
